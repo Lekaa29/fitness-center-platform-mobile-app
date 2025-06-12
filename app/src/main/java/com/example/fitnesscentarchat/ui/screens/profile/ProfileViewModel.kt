@@ -1,0 +1,86 @@
+package com.example.fitnesscentarchat.ui.screens.profile
+
+import android.util.Log
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.fitnesscentarchat.data.repository.AttendanceRepository
+import com.example.fitnesscentarchat.data.repository.AuthRepository
+import com.example.fitnesscentarchat.data.repository.MembershipRepository
+import com.example.fitnesscentarchat.data.repository.UserRepository
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+
+class ProfileViewModel(
+    private val membershipRepository: MembershipRepository,
+    private val attendanceRepository: AttendanceRepository,
+    private val authRepository: AuthRepository
+) : ViewModel() {
+
+    private val _uiState = MutableStateFlow(ProfileUiState())
+    val uiState: StateFlow<ProfileUiState> = _uiState.asStateFlow()
+
+
+
+    fun loadProfile(fitnessCenterId: Int) {
+        viewModelScope.launch {
+            _uiState.update { it.copy(isLoading = true, error = null) }
+
+            Log.d("ProfileViewModel", "Starting to load profile for fitness center: $fitnessCenterId")
+
+            try {
+                // Load attendances
+                attendanceRepository.GetCurrentUserFitnessCenterAttendances(fitnessCenterId).fold(
+                    onSuccess = { attendances ->
+                        Log.d("ProfileViewModel", "Successfully loaded ${attendances.size} attendances")
+                        attendances.forEach { attendance ->
+                            Log.d("ProfileViewModel", "Attendance: ID=${attendance.IdAttendance}, Timestamp=${attendance.Timestamp}")
+                        }
+                        _uiState.update {
+                            it.copy(
+                                attendances = attendances,
+                                isLoading = false,
+                                error = null
+                            )
+                        }
+                    },
+                    onFailure = { error ->
+                        Log.e("ProfileViewModel", "Failed to load attendances: ${error.message}", error)
+                        _uiState.update {
+                            it.copy(
+                                error = error.message ?: "Failed to load attendances",
+                                isLoading = false
+                            )
+                        }
+                    }
+                )
+
+                // Load user info
+                val currentUser = authRepository.getCurrentUser()
+                Log.d("ProfileViewModel", "Current user: ${currentUser?.FirstName}")
+                _uiState.update {
+                    it.copy(
+                        user = currentUser
+                    )
+                }
+
+            } catch (e: Exception) {
+                Log.e("ProfileViewModel", "Unexpected error in loadProfile", e)
+                _uiState.update {
+                    it.copy(
+                        error = "Unexpected error: ${e.message}",
+                        isLoading = false
+                    )
+                }
+            }
+        }
+    }
+
+
+
+    fun clearError() {
+        _uiState.update { it.copy(error = null) }
+    }
+}
