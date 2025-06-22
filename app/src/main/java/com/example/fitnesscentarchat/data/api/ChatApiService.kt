@@ -1,11 +1,13 @@
 package com.example.fitnesscentarchat.data.api
 
 import com.example.fitnesscentarchat.data.models.*
+import okhttp3.MultipartBody
 import retrofit2.Response
 
 import retrofit2.http.*
 
 interface ChatApiService {
+
     @POST("Account/login")
     suspend fun login(@Body authRequest: AuthRequest): AuthResponse
 
@@ -14,6 +16,12 @@ interface ChatApiService {
 
     @GET("users")
     suspend fun getUsers(): List<User>
+    @POST("Account/UpdateUser")
+    suspend fun updateUser(
+        @Body user: User
+    ): Response<Any>
+
+
 
     @GET("Account/{userId}")
     suspend fun getUserById(@Path("userId") userId: Int): User
@@ -52,16 +60,16 @@ interface ChatApiService {
 
 
     @GET("Shop/items/{fitnessCenterId}")
-    suspend fun GetFitnessCenterItems(fitnessCenterId: Int): List<ShopItem>
+    suspend fun getFitnessCenterItems(@Path("fitnessCenterId") fitnessCenterId: Int): List<ShopItem>
 
     @GET("Shop/items/users")
-    suspend fun GetUserItems(): List<ShopItem>
+    suspend fun getUserItems(): List<ShopItem>
 
     @GET("Shop/item/{shopItemId}")
-    suspend fun GetShopItem(shopItemId: Int): ShopItem
+    suspend fun getShopItem(@Path("shopItemId") shopItemId: Int): ShopItem
 
     @POST("Shop/BuyShopItem/{shopItemId}")
-    suspend fun BuyShopItem(
+    suspend fun buyShopItem(
         @Path("recipientId") shopItemId: Int,
     ): Response<Any>
 

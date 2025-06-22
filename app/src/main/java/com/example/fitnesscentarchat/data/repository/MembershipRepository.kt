@@ -3,7 +3,7 @@ package com.example.fitnesscentarchat.data.repository
 import android.util.Log
 import com.example.fitnesscentarchat.data.api.ChatApiService
 import com.example.fitnesscentarchat.data.models.Conversation
-import com.example.fitnesscentarchat.data.models.Membership
+import com.example.fitnesscentarchat.data.models.MembershipModel
 import com.example.fitnesscentarchat.data.models.Message
 import com.example.fitnesscentarchat.data.repository.interfaces.IAuthRepository
 import com.example.fitnesscentarchat.data.repository.interfaces.IMembershipRepository
@@ -24,7 +24,7 @@ class MembershipRepository(
 
 
 
-    override suspend fun GetCurrentUserMemberships(): Result<List<Membership>> {
+    override suspend fun GetCurrentUserMemberships(): Result<List<MembershipModel>> {
         return try {
             Result.success(apiService.getCurrentUserMemberships())
         } catch (e: Exception) {
@@ -33,7 +33,7 @@ class MembershipRepository(
     }
 
 
-    override suspend fun GetUserMembershipByFitnessCenter(fitnessCenterId: Int): Result<Membership> {
+    override suspend fun GetUserMembershipByFitnessCenter(fitnessCenterId: Int): Result<MembershipModel> {
         return try {
             Result.success(apiService.getUserMembershipByFitnessCenter(fitnessCenterId))
         } catch (e: Exception) {
@@ -42,7 +42,7 @@ class MembershipRepository(
     }
 
 
-    override suspend fun AddMembership(fitnessCenterId: Int): Result<Membership> {
+    override suspend fun AddMembership(fitnessCenterId: Int): Result<MembershipModel> {
         return try {
             val currentUser = authRepository.getCurrentUser()
             if (currentUser == null) {
@@ -51,13 +51,16 @@ class MembershipRepository(
 
 
 
-            val membership = Membership(
-                IdMembership = 0,
-                IdUser = currentUser.Id,
-                IdFitnessCentar = fitnessCenterId,
-                LoyaltyPoints = null,
-                StreakRunCount = null,
-                MembershipDeadline = null
+            val membership = MembershipModel(
+                idMembership = 0,
+                idUser = currentUser.id,
+                idFitnessCentar = fitnessCenterId,
+                loyaltyPoints = null,
+                streakRunCount = null,
+                fitnessCentarBannerUrl = null,
+                fitnessCentarName = null,
+                membershipDeadline = null,
+                points = null
             )
 
 

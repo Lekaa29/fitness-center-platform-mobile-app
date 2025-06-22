@@ -1,10 +1,22 @@
 package com.example.fitnesscentarchat.ui.screens.profile
 
+import android.content.Context
+import android.net.Uri
+import android.util.Log
+import android.widget.Button
+import android.widget.ImageView
+import android.widget.ProgressBar
+import android.widget.TextView
+import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -14,12 +26,21 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.fitnesscentarchat.data.models.Attendance
+import com.example.fitnesscentarchat.data.models.UploadProgress
+import com.example.fitnesscentarchat.data.models.User
 import com.example.fitnesscentarchat.data.repository.AuthRepository
+import com.example.fitnesscentarchat.data.repository.CloudflareUploader
+import com.example.fitnesscentarchat.data.repository.ImageUploadRepository
+import kotlinx.coroutines.launch
+import java.io.File
+import java.io.FileOutputStream
 import java.text.DateFormatSymbols
 import java.text.SimpleDateFormat
 import java.time.LocalDateTime
@@ -35,23 +56,69 @@ fun ProfileScreen(
     authRepository: AuthRepository,
     viewModel: ProfileViewModel
 ) {
+    // Collect the StateFlow
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val coroutineScope = rememberCoroutineScope()
 
-    val uiState by remember {
-        viewModel.uiState
-    }.collectAsStateWithLifecycle()
+    // Image upload states
+    var isUploading by remember { mutableStateOf(false) }
+    var uploadError by remember { mutableStateOf<String?>(null) }
 
+    // Get context at the composable level
+    val context = LocalContext.current
 
+    // Image picker launcher
+    val imagePickerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent()
+    ) { uri ->
+        uri?.let { selectedUri ->
+            coroutineScope.launch {
+                try {
+                    isUploading = true
+                    uploadError = null
 
-    var currentUser by remember { mutableStateOf<Int?>(null) }
+                    // Convert URI to File
+                    val file = uriToFile(context, selectedUri)
 
-    val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSSSSS")
+                    // Upload to Cloudflare
+                    val cloudflareUploader = CloudflareUploader()
+                    val result = cloudflareUploader.uploadImage(file)
 
+                    result.fold(
+                        onSuccess = { imageResult ->
+                            // Get the image URL
+                            val imageUrl = cloudflareUploader.getImageUrls(imageResult.id).original
 
+                            // Send to viewModel
+                            viewModel.updateUser(imageUrl)
+
+                            isUploading = false
+                        },
+                        onFailure = { error ->
+                            uploadError = error.message
+                            isUploading = false
+                        }
+                    )
+
+                    // Clean up temp file
+                    file.delete()
+
+                } catch (e: Exception) {
+                    uploadError = e.message
+                    isUploading = false
+                }
+            }
+        }
+    }
 
     LaunchedEffect(fitnessCenterId) {
-        currentUser = authRepository.getCurrentUser()?.Id
-        viewModel.loadProfile(fitnessCenterId)
+        coroutineScope.launch {
+            launch {
+                viewModel.loadProfile(fitnessCenterId)
+            }
+        }
     }
+
 
     Scaffold(
         topBar = {
@@ -60,39 +127,124 @@ fun ProfileScreen(
             )
         }
     ) { paddingValues ->
-        Box(
+        Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
+                .padding(16.dp)
         ) {
-            if (uiState.isLoading && uiState.user == null) {
-                CircularProgressIndicator(
-                    modifier = Modifier.align(Alignment.Center)
-                )
-            } else if (uiState.user == null) {
-                Text(
-                    text = "No user found",
-                    modifier = Modifier.align(Alignment.Center)
-                )
-            } else {
-                Column {
-                    uiState.user?.let { user ->
-                        Column(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .padding(16.dp)
-                        ) {
+            // Always show current state for debugging
+            Spacer(modifier = Modifier.height(16.dp))
 
-                            Text(
-                                text = user.FirstName,
-                                style = MaterialTheme.typography.titleMedium,
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(vertical = 8.dp)
-                            )
+// Upload Image Button
+            Button(
+                onClick = {
+                    if (!isUploading) {
+                        imagePickerLauncher.launch("image/*")
+                    }
+                },
+                enabled = !isUploading,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                if (isUploading) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        CircularProgressIndicator(
+                            modifier = Modifier.size(16.dp),
+                            strokeWidth = 2.dp
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text("Uploading Image...")
+                    }
+                } else {
+                    Text("Upload Profile Image")
+                }
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            when {
+                uiState.isLoading && uiState.user == null -> {
+                    Box(
+                        modifier = Modifier.fillMaxWidth(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            CircularProgressIndicator()
+                            Spacer(modifier = Modifier.height(8.dp))
+                            Text("Loading profile...")
                         }
                     }
+                }
 
+                uiState.error != null -> {
+                    Card(
+                        modifier = Modifier.fillMaxWidth(),
+                        colors = CardDefaults.cardColors(
+                            containerColor = MaterialTheme.colorScheme.errorContainer
+                        )
+                    ) {
+                        Column(
+                            modifier = Modifier.padding(16.dp)
+                        ) {
+                            Text(
+                                text = "Error occurred:",
+                                style = MaterialTheme.typography.titleSmall,
+                                color = MaterialTheme.colorScheme.onErrorContainer
+                            )
+                            Text(
+                                text = uiState.error!!,
+                                color = MaterialTheme.colorScheme.onErrorContainer
+                            )
+                            Spacer(modifier = Modifier.height(8.dp))
+                            Button(
+                                onClick = {
+                                    viewModel.clearError()
+                                    viewModel.loadProfile(fitnessCenterId)
+                                }
+                            ) {
+                                Text("Retry")
+                            }
+                        }
+                    }
+                }
+
+                else -> {
+                    // User info
+                    uiState.user?.let { user ->
+                        Card(
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Column(
+                                modifier = Modifier.padding(16.dp)
+                            ) {
+                                Text(
+                                    text = "User Profile",
+                                    style = MaterialTheme.typography.titleMedium
+                                )
+                                Spacer(modifier = Modifier.height(8.dp))
+                                Text(
+                                    text = "Name: ${user.FirstName}",
+                                    style = MaterialTheme.typography.bodyLarge
+                                )
+                                // Add more user details if available
+                                Text(
+                                    text = "ID: ${user.Id}",
+                                    style = MaterialTheme.typography.bodyMedium
+                                )
+                            }
+                        }
+
+                        Spacer(modifier = Modifier.height(16.dp))
+                    } ?: run {
+                        Text(
+                            text = "No user data available",
+                            color = MaterialTheme.colorScheme.error
+                        )
+                    }
                     uiState.attendances?.let { attendances ->
                         Column(
                             modifier = Modifier
@@ -109,24 +261,11 @@ fun ProfileScreen(
                         }
                     }
 
-
-
-                }
-            }
-
-            if (uiState.error != null) {
-                Snackbar(
-                    modifier = Modifier
-                        .align(Alignment.BottomCenter)
-                        .padding(16.dp)
-                ) {
-                    Text(uiState.error!!)
                 }
             }
         }
     }
 }
-
 
 
 @Composable
@@ -304,3 +443,21 @@ fun AttendanceCalendarGrid(
         }
     }
 }
+
+private fun uriToFile(context: Context, uri: Uri): File {
+    val inputStream = context.contentResolver.openInputStream(uri)
+        ?: throw Exception("Cannot open input stream")
+
+    // Create temp file in cache directory
+    val tempFile = File.createTempFile("upload_", ".jpg", context.cacheDir)
+
+    FileOutputStream(tempFile).use { output ->
+        inputStream.use { input ->
+            input.copyTo(output)
+        }
+    }
+
+    return tempFile
+}
+
+

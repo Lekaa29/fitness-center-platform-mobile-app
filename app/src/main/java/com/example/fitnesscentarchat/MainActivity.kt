@@ -21,6 +21,7 @@ import com.example.fitnesscentarchat.data.repository.AuthRepository
 import com.example.fitnesscentarchat.data.repository.FitnessCenterRepository
 import com.example.fitnesscentarchat.data.repository.MembershipRepository
 import com.example.fitnesscentarchat.data.repository.MessageRepository
+import com.example.fitnesscentarchat.data.repository.ShopRepository
 import com.example.fitnesscentarchat.data.repository.UserRepository
 import com.example.fitnesscentarchat.ui.screens.chat.ChatScreen
 import com.example.fitnesscentarchat.ui.screens.chat.ChatViewModel
@@ -44,6 +45,7 @@ class MainActivity : ComponentActivity() {
     private lateinit var attendanceRepository: AttendanceRepository
     private lateinit var fitnessCenterRepository: FitnessCenterRepository
     private lateinit var membershipRepository: MembershipRepository
+    private lateinit var shopRepository: ShopRepository
 
     @SuppressLint("ViewModelConstructorInComposable")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -55,12 +57,13 @@ class MainActivity : ComponentActivity() {
         val apiService = RetrofitBuilder.chatApiService
 
         authRepository = AuthRepository(apiService, sharedPreferences)
-        userRepository = UserRepository(apiService)
+        userRepository = UserRepository(apiService, authRepository)
         messageRepository = MessageRepository(apiService, authRepository)
 
         attendanceRepository = AttendanceRepository(apiService, authRepository)
         fitnessCenterRepository = FitnessCenterRepository(apiService)
         membershipRepository = MembershipRepository(apiService, authRepository)
+        shopRepository = ShopRepository(apiService, authRepository)
 
         setContent {
             AppTheme {
@@ -163,6 +166,7 @@ class MainActivity : ComponentActivity() {
                                 attendanceRepository = attendanceRepository,
                                 userRepository = userRepository,
                                 authRepository = authRepository,
+                                shopRepository = shopRepository,
                                 onNavigateBack = {
                                     navController.popBackStack()
                                 }

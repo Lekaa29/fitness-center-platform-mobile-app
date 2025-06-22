@@ -3,6 +3,7 @@ package com.example.fitnesscentarchat.ui.screens.profile
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.fitnesscentarchat.data.models.User
 import com.example.fitnesscentarchat.data.repository.AttendanceRepository
 import com.example.fitnesscentarchat.data.repository.AuthRepository
 import com.example.fitnesscentarchat.data.repository.MembershipRepository
@@ -16,7 +17,8 @@ import kotlinx.coroutines.launch
 class ProfileViewModel(
     private val membershipRepository: MembershipRepository,
     private val attendanceRepository: AttendanceRepository,
-    private val authRepository: AuthRepository
+    private val authRepository: AuthRepository,
+    private val userRepository: UserRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(ProfileUiState())
@@ -78,6 +80,26 @@ class ProfileViewModel(
         }
     }
 
+
+
+    fun updateUser(imageUrl: String) {
+        viewModelScope.launch {
+            _uiState.value = _uiState.value.copy(isUploading = true)
+
+            userRepository.UpdateUser(imageUrl).fold(
+                onSuccess = {
+                    _uiState.value = _uiState.value.copy(isUploading = false)
+                },
+                onFailure = { error ->
+                    Log.e("VIEWMODEL", "Failed to send message", error)
+                    _uiState.value = _uiState.value.copy(
+                        isUploading = false,
+                        error = "Failed to send: ${error.message}"
+                    )
+                }
+            )
+        }
+    }
 
 
     fun clearError() {

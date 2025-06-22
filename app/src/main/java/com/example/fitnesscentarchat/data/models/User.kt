@@ -2,8 +2,10 @@ package com.example.fitnesscentarchat.data.models
 import com.squareup.moshi.Json
 
 data class User(
-    @Json(name = "id") val Id: Int,
-    @Json(name = "firstName") val FirstName: String,
-    @Json(name = "lastName") val LastName: String,
-    @Json(name = "pictureLink") val PictureLink: String? = null
+    @Json(name = "id") val id: Int,
+    @Json(name = "firstName") val firstName: String,
+    @Json(name = "lastName") val lastName: String,
+    @Json(name = "username") val username: String,
+    @Json(name = "pictureLink") val pictureLink: String? = null
+
 )

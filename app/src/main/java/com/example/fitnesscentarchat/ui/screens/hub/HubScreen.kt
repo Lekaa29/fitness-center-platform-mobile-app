@@ -13,6 +13,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.fitnesscentarchat.data.models.FitnessCenter
+import com.example.fitnesscentarchat.ui.screens.hub.components.Background
+import com.example.fitnesscentarchat.ui.screens.map.MapScreen
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -22,12 +25,43 @@ fun HubScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
+    var isMapMode by remember { mutableStateOf(false) }
+    val recentSearches = remember { mutableStateListOf("") }
+    var isSearchExpanded by remember { mutableStateOf(false) }
+
+    var selectedGymForMap by remember { mutableStateOf<FitnessCenter?>(null) }
+
+
+    var searchText by remember { mutableStateOf("") }
+
+    if(isMapMode) {
+        MapScreen(onBackClick = {
+            isMapMode = false
+            selectedGymForMap = null
+        },
+            selectedGymForMap,
+            uiState)
+    } else {
+        Background(
+            onFitnessCenterSelected,
+            uiState,
+            onMapClick = { isMapMode = true },
+            isSearchExpanded = isSearchExpanded,
+            searchText = searchText,
+            recentSearches = recentSearches,
+            onSearchExpandedChange = { isSearchExpanded = it },
+            onSearchTextChange = { searchText = it },
+            onGymLocationClick = { gym ->
+                selectedGymForMap = gym
+                isMapMode = true
+            }
+        )
+
+    }
+
+
     Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("Fitness Centers") }
-            )
-        }
+
     ) { paddingValues ->
         Box(
             modifier = Modifier
@@ -44,60 +78,14 @@ fun HubScreen(
                     modifier = Modifier.align(Alignment.Center)
                 )
             } else {
-                LazyColumn(
-                    modifier = Modifier.fillMaxSize()
-                ) {
-                    items(uiState.fitnessCenters) {
-                        fitnessCenter ->
-                        FitnessCenterItem(fitnessCenter = fitnessCenter,
-                            onClick = { onFitnessCenterSelected(fitnessCenter.IdFitnessCentar)} )
 
-                    }
-                }
             }
 
-            if (uiState.error != null) {
-                Snackbar(
-                    modifier = Modifier
-                        .align(Alignment.BottomCenter)
-                        .padding(16.dp)
-                ) {
-                    Text(uiState.error!!)
-                }
-            }
+
         }
     }
+
+
+
 }
 
-@Composable
-fun FitnessCenterItem(fitnessCenter: FitnessCenter, onClick: () -> Unit) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 8.dp)
-            .clickable(onClick = onClick)
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Icon(
-                imageVector = Icons.Default.Person,
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.primary,
-                modifier = Modifier.size(40.dp)
-            )
-
-            Spacer(modifier = Modifier.width(16.dp))
-
-            Column {
-                Text(
-                    text = fitnessCenter.Name ?: "NAME??",
-                    style = MaterialTheme.typography.titleMedium
-                )
-            }
-        }
-    }
-}

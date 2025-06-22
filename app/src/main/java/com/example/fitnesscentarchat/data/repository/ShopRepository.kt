@@ -28,7 +28,7 @@ class ShopRepository(
 
     override suspend fun GetFitnessCenterItems(fitnessCenterId: Int): Result<List<ShopItem>> {
         return try {
-            Result.success(apiService.GetFitnessCenterItems(fitnessCenterId))
+            Result.success(apiService.getFitnessCenterItems(fitnessCenterId))
         } catch (e: Exception) {
             Result.failure(e)
         }
@@ -36,7 +36,7 @@ class ShopRepository(
 
     override suspend fun GetUserItems(): Result<List<ShopItem>> {
         return try {
-            Result.success(apiService.GetUserItems())
+            Result.success(apiService.getUserItems())
         } catch (e: Exception) {
             Result.failure(e)
         }
@@ -44,7 +44,7 @@ class ShopRepository(
 
     override suspend fun GetShopItem(shopItemId: Int): Result<ShopItem> {
         return try {
-            Result.success(apiService.GetShopItem(shopItemId))
+            Result.success(apiService.getShopItem(shopItemId))
         } catch (e: Exception) {
             Result.failure(e)
         }
@@ -60,7 +60,7 @@ class ShopRepository(
 
 
 
-            val response = apiService.BuyShopItem(shopItemId)
+            val response = apiService.buyShopItem(shopItemId)
             if (response.isSuccessful) {
                 Result.success(shopItemId) // Or parse the actual response
             } else {

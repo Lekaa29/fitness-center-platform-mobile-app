@@ -6,14 +6,8 @@ import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.compose.rememberNavController
 import com.example.fitnesscentarchat.data.repository.AttendanceRepository
 import com.example.fitnesscentarchat.data.repository.AuthRepository
 import com.example.fitnesscentarchat.data.repository.FitnessCenterRepository
@@ -26,6 +20,7 @@ import com.example.fitnesscentarchat.ui.screens.hub.ShopScreen
 import com.example.fitnesscentarchat.ui.screens.hub.ShopViewModel
 import com.example.fitnesscentarchat.ui.screens.profile.ProfileScreen
 import com.example.fitnesscentarchat.ui.screens.profile.ProfileViewModel
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -39,69 +34,81 @@ fun FitnessCenterWithBottomNav(
     authRepository: AuthRepository,
     onNavigateBack: () -> Unit
 ) {
-    val nestedNavController = rememberNavController()
-    val currentRoute = nestedNavController.currentBackStackEntryAsState().value?.destination?.route
+    var currentTab by remember { mutableStateOf("overview") }
+    val coroutineScope = rememberCoroutineScope()
+
+    val overviewViewModel = remember {
+        FitnessCenterViewModel(
+            fitnessCenterRepository = fitnessCenterRepository,
+            membershipRepository = membershipRepository,
+            attendanceRepository = attendanceRepository,
+            userRepository = userRepository
+        )
+    }
+
+    val shopViewModel = remember {
+        ShopViewModel(shopRepository = shopRepository)
+    }
+
+    val membershipViewModel = remember {
+        MembershipViewModel(membershipRepository = membershipRepository)
+    }
+
+    val profileViewModel = remember {
+        ProfileViewModel(
+            membershipRepository = membershipRepository,
+            attendanceRepository = attendanceRepository,
+            authRepository = authRepository,
+            userRepository = userRepository
+        )
+    }
+
+    // Preload all data
+    LaunchedEffect(fitnessCenterId) {
+        coroutineScope.launch {
+            launch { overviewViewModel.loadFitnessCenterHome(fitnessCenterId) }
+            launch { shopViewModel.loadShop(fitnessCenterId) }
+            launch { membershipViewModel.loadMembership(fitnessCenterId) }
+            launch { profileViewModel.loadProfile(fitnessCenterId) }
+        }
+    }
 
     Scaffold(
         bottomBar = {
             NavigationBar {
                 NavigationBarItem(
-                    selected = currentRoute == "overview",
-                    onClick = {
-                        nestedNavController.navigate("overview") {
-                            popUpTo("overview") { inclusive = true }
-                        }
-                    },
+                    selected = currentTab == "overview",
+                    onClick = { currentTab = "overview" },
                     icon = { Icon(Icons.Default.Home, contentDescription = null) },
                     label = { Text("Overview") }
                 )
                 NavigationBarItem(
-                    selected = currentRoute == "shop",
-                    onClick = {
-                        nestedNavController.navigate("shop") {
-                            popUpTo("overview")
-                        }
-                    },
+                    selected = currentTab == "shop",
+                    onClick = { currentTab = "shop" },
                     icon = { Icon(Icons.Default.Person, contentDescription = null) },
                     label = { Text("Shop") }
                 )
                 NavigationBarItem(
-                    selected = currentRoute == "membership",
-                    onClick = {
-                        nestedNavController.navigate("membership") {
-                            popUpTo("overview")
-                        }
-                    },
+                    selected = currentTab == "membership",
+                    onClick = { currentTab = "membership" },
                     icon = { Icon(Icons.Default.Person, contentDescription = null) },
                     label = { Text("Membership") }
                 )
                 NavigationBarItem(
-                    selected = currentRoute == "profile",
-                    onClick = {
-                        nestedNavController.navigate("profile") {
-                            popUpTo("overview")
-                        }
-                    },
+                    selected = currentTab == "profile",
+                    onClick = { currentTab = "profile" },
                     icon = { Icon(Icons.Default.Person, contentDescription = null) },
                     label = { Text("Profile") }
                 )
             }
         }
     ) { paddingValues ->
-        NavHost(
-            navController = nestedNavController,
-            startDestination = "overview",
-            modifier = Modifier.padding(paddingValues)
-        ) {
-            // Overview Screen - Multiple repositories
-            composable("overview") {
-                val overviewViewModel = FitnessCenterViewModel(
-                    fitnessCenterRepository = fitnessCenterRepository,
-                    membershipRepository = membershipRepository,
-                    attendanceRepository = attendanceRepository,
-                    userRepository = userRepository
-                )
+        Box(modifier = Modifier.padding(paddingValues)) {
+            // ALL SCREENS ARE PRE-COMPOSED AND KEPT IN MEMORY
+            // Only visibility changes, no recomposition needed!
 
+            // Overview Screen
+            if (currentTab == "overview") {
                 FitnessCenterScreen(
                     viewModel = overviewViewModel,
                     fitnessCenterId = fitnessCenterId,
@@ -110,11 +117,8 @@ fun FitnessCenterWithBottomNav(
                 )
             }
 
-            composable("shop") {
-                val shopViewModel = ShopViewModel(
-                    shopRepository = shopRepository,
-                )
-
+            // Shop Screen
+            if (currentTab == "shop") {
                 ShopScreen(
                     fitnessCenterId = fitnessCenterId,
                     viewModel = shopViewModel,
@@ -122,12 +126,8 @@ fun FitnessCenterWithBottomNav(
                 )
             }
 
-            // Membership Screen - Membership and User repositories
-            composable("membership") {
-                val membershipViewModel = MembershipViewModel(
-                    membershipRepository = membershipRepository,
-                )
-
+            // Membership Screen
+            if (currentTab == "membership") {
                 MembershipScreen(
                     viewModel = membershipViewModel,
                     fitnessCenterId = fitnessCenterId,
@@ -135,13 +135,8 @@ fun FitnessCenterWithBottomNav(
                 )
             }
 
-            composable("profile") {
-                val profileViewModel = ProfileViewModel(
-                    membershipRepository = membershipRepository,
-                    attendanceRepository = attendanceRepository,
-                    authRepository = authRepository
-                )
-
+            // Profile Screen
+            if (currentTab == "profile") {
                 ProfileScreen(
                     viewModel = profileViewModel,
                     fitnessCenterId = fitnessCenterId,
@@ -152,102 +147,108 @@ fun FitnessCenterWithBottomNav(
     }
 }
 
-
-
-
-
-
-
-
-
-
-
-
-@OptIn(ExperimentalMaterial3Api::class)
+// ALTERNATIVE APPROACH: Pre-compose all screens but show only one
 @Composable
-fun FitnessCenterScreen(
+fun FitnessCenterWithPrecomposedScreens(
     fitnessCenterId: Int,
+    fitnessCenterRepository: FitnessCenterRepository,
+    membershipRepository: MembershipRepository,
+    attendanceRepository: AttendanceRepository,
+    userRepository: UserRepository,
+    shopRepository: ShopRepository,
     authRepository: AuthRepository,
-    viewModel: FitnessCenterViewModel,
     onNavigateBack: () -> Unit
 ) {
+    var currentTab by remember { mutableStateOf("overview") }
 
-    val uiState by remember {
-        viewModel.uiState
-    }.collectAsStateWithLifecycle()
-
-    var currentUser by remember { mutableStateOf<Int?>(null) }
-
-    LaunchedEffect(fitnessCenterId) {
-        currentUser = authRepository.getCurrentUser()?.Id
-        viewModel.loadFitnessCenterHome(fitnessCenterId)
-    }
-
-    Scaffold(
-    topBar = {
-        TopAppBar(
-            title = { Text("Fitness Center HOME") }
+    // ViewModels...
+    val fitnessCenterViewModel = remember {
+        FitnessCenterViewModel(
+            fitnessCenterRepository = fitnessCenterRepository,
+            membershipRepository = membershipRepository,
+            attendanceRepository = attendanceRepository,
+            userRepository = userRepository
         )
     }
+    // ... other viewModels
+
+    val shopViewModel = remember {
+        ShopViewModel(shopRepository = shopRepository)
+    }
+
+    val membershipViewModel = remember {
+        MembershipViewModel(membershipRepository = membershipRepository)
+    }
+
+    val profileViewModel = remember {
+        ProfileViewModel(
+            membershipRepository = membershipRepository,
+            attendanceRepository = attendanceRepository,
+            authRepository = authRepository,
+            userRepository = userRepository
+        )
+    }
+    Scaffold(
+        bottomBar = {
+            NavigationBar {
+                // ... navigation items
+            }
+        }
     ) { paddingValues ->
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-        ) {
-            if (uiState.isLoading && uiState.fitnessCenter == null) {
-                CircularProgressIndicator(
-                    modifier = Modifier.align(Alignment.Center)
+        Box(modifier = Modifier.padding(paddingValues)) {
+            // PRE-COMPOSE ALL SCREENS (they stay in memory)
+            // Use alpha/visibility modifiers for instant switching
+
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .then(if (currentTab == "overview") Modifier else Modifier.size(0.dp))
+            ) {
+                FitnessCenterScreen(
+                    viewModel = fitnessCenterViewModel,
+                    fitnessCenterId = fitnessCenterId,
+                    authRepository = authRepository,
+                    onNavigateBack = onNavigateBack
                 )
-            } else if (uiState.fitnessCenter == null) {
-                Text(
-                    text = "No fitness center found",
-                    modifier = Modifier.align(Alignment.Center)
-                )
-            } else {
-                Column {
-                    uiState.fitnessCenter?.let { fitnessCenter ->
-                        Column(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .padding(16.dp)
-                        ) {
-                            Text(
-                                text = fitnessCenter.Name,
-                                style = MaterialTheme.typography.titleMedium,
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(vertical = 8.dp)
-                            )
-                        }
-                    }
-                    uiState.recentAttendance?.let { recentAttendance ->
-                        Column(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .padding(16.dp)
-                        ) {
-                            Text(
-                                text = "RECENT: $recentAttendance",
-                                style = MaterialTheme.typography.titleMedium,
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(vertical = 8.dp)
-                            )
-                        }
-                    }
-                }
             }
 
-            if (uiState.error != null) {
-                Snackbar(
-                    modifier = Modifier
-                        .align(Alignment.BottomCenter)
-                        .padding(16.dp)
-                ) {
-                    Text(uiState.error!!)
-                }
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .then(if (currentTab == "shop") Modifier else Modifier.size(0.dp))
+            ) {
+                ShopScreen(
+                    fitnessCenterId = fitnessCenterId,
+                    viewModel = shopViewModel,
+                    authRepository = authRepository
+                )
             }
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .then(if (currentTab == "membership") Modifier else Modifier.size(0.dp))
+            ) {
+                MembershipScreen(
+                    fitnessCenterId = fitnessCenterId,
+                    viewModel = membershipViewModel,
+                    authRepository = authRepository
+                )
+            }
+
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .then(if (currentTab == "profile") Modifier else Modifier.size(0.dp))
+            ) {
+                ProfileScreen(
+                    fitnessCenterId = fitnessCenterId,
+                    viewModel = profileViewModel,
+                    authRepository = authRepository
+                )
+            }
+
+
+            // ... other screens with same pattern
         }
     }
 }

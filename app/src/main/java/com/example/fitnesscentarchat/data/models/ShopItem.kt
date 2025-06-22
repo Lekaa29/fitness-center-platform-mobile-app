@@ -7,8 +7,8 @@ import java.time.LocalDateTime
 data class ShopItem(
     @Json(name = "idShopItem") val IdShopItem: Int,
     @Json(name = "idFitnessCentar") val IdFitnessCentar: Int,
-    @Json(name = "name") val Name: String?,
-    @Json(name = "pictureUrl") val PictureUrl: String?,
-    @Json(name = "price") val Price: BigDecimal,
-    @Json(name = "loyaltyPrice") val LoyaltyPrice: BigDecimal?
+    @Json(name = "name") val Name: String,
+    @Json(name = "pictureUrl") val PictureUrl: String,
+    @Json(name = "price") val Price: Double,
+    @Json(name = "loyaltyPrice") val LoyaltyPrice: Double
 )

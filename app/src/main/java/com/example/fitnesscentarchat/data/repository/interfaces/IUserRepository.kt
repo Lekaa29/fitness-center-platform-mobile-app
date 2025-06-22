@@ -11,4 +11,6 @@ interface IUserRepository {
     fun getUsersFlow(): Flow<List<User>>
     suspend fun getUsersConversations(): Result<List<Conversation>>
 
-}
+    suspend fun UpdateUser(imageUrl: String): Result<User>
+
+    }

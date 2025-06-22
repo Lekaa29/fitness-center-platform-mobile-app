@@ -17,6 +17,7 @@ import com.example.fitnesscentarchat.data.models.Conversation
 import com.example.fitnesscentarchat.data.models.ShopItem
 import com.example.fitnesscentarchat.data.repository.AuthRepository
 import com.example.fitnesscentarchat.ui.screens.users.UsersViewModel
+import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
@@ -38,9 +39,17 @@ fun ShopScreen(
 
 
 
+    val coroutineScope = rememberCoroutineScope()
+
     LaunchedEffect(fitnessCenterId) {
-        currentUser = authRepository.getCurrentUser()?.Id
-        viewModel.loadShop(fitnessCenterId)
+        coroutineScope.launch {
+            launch {
+                currentUser = authRepository.getCurrentUser()?.Id
+            }
+            launch {
+                viewModel.loadShop(fitnessCenterId)
+            }
+        }
     }
 
 

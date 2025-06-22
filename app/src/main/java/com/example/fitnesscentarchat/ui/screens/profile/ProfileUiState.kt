@@ -6,6 +6,7 @@ import com.example.fitnesscentarchat.data.models.User
 
 data class ProfileUiState(
     val isLoading: Boolean = false,
+    val isUploading: Boolean = false,
     val user: User? = null,
     val attendances: List<Attendance> = emptyList(),
     //val coaches
