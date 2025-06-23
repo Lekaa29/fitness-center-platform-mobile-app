@@ -12,6 +12,7 @@ data class MembershipModel(
     @Json(name = "streakRunCount") val streakRunCount: Int?,
     @Json(name = "fitnessCentarName") val fitnessCentarName: String?,
     @Json(name = "fitnessCentarBannerUrl") val fitnessCentarBannerUrl: String?,
+    @Json(name = "fitnessCentarLogoUrl") val fitnessCentarLogoUrl: String?,
     @Json(name = "membershipDeadline") val membershipDeadline: String?,
     @Json(name = "username") val username: String?
 

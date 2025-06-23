@@ -1,6 +1,8 @@
 package com.example.fitnesscentarchat.ui.screens.fitnessCenter
 
+import com.example.fitnesscentarchat.data.models.Article
 import com.example.fitnesscentarchat.data.models.Attendance
+import com.example.fitnesscentarchat.data.models.Coach
 import com.example.fitnesscentarchat.data.models.FitnessCenter
 import com.example.fitnesscentarchat.data.models.MembershipModel
 

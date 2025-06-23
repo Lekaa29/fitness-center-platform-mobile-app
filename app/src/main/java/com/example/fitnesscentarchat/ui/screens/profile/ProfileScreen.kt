@@ -461,3 +461,33 @@ private fun uriToFile(context: Context, uri: Uri): File {
 }
 
 
+/*
+
+@Composable
+fun Background(
+    modifier: Modifier = Modifier,
+) {
+
+    val uiState = ProfileUiState()
+    val scrollState = rememberScrollState()
+
+    var topTextOffsetY by remember { mutableStateOf(0f) }
+
+    var editProfileOverlay by remember { mutableStateOf(false) }
+
+    Box(modifier = Modifier.fillMaxSize()) {
+        Box(){
+            BackgroundScrollableContent(
+                uiState,
+                scrollState = scrollState,
+                onTopTextPositioned = { topTextOffsetY = it },
+                onEditProfileChange = { editProfileOverlay = it},
+                editProfileOverlay = editProfileOverlay
+            )
+        }
+
+    }
+}
+
+ */
+

@@ -4,11 +4,11 @@ import com.squareup.moshi.Json
 import java.time.LocalDateTime
 
 data class MembershipPackage(
-    @Json(name = "id") val Id: Int,
-    @Json(name = "title") val Title: String,
-    @Json(name = "price") val Price: Float,
-    @Json(name = "days") val Days: Int?,
-    @Json(name = "discount") val Discount: Int?,
-    @Json(name = "idFitnessCentar") val IdFitnessCentar: Int,
+    @Json(name = "id") val id: Int,
+    @Json(name = "title") val title: String,
+    @Json(name = "price") val price: Float,
+    @Json(name = "days") val days: Int?,
+    @Json(name = "discount") val discount: Int?,
+    @Json(name = "idFitnessCentar") val idFitnessCentar: Int,
 )
 

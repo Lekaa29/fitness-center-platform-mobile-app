@@ -105,3 +105,28 @@ fun MembershipScreen(
         }
     }
 }
+
+/*
+
+@Composable
+fun Background(
+    modifier: Modifier = Modifier,
+) {
+
+    var topTextOffsetY by remember { mutableStateOf(0f) }
+
+    var membershipItemOverlay by remember { mutableStateOf(false) }
+
+    Box(modifier = Modifier.fillMaxSize()) {
+        Box(){
+            BackgroundScrollableContent(
+                onTopTextPositioned = { topTextOffsetY = it },
+                onMembershipItemChange = { membershipItemOverlay = it},
+                membershipItemOverlay = membershipItemOverlay,
+                uiState = MembershipUiState()
+            )
+        }
+
+    }
+}
+ */

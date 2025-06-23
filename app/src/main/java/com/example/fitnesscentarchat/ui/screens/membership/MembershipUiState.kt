@@ -1,12 +1,17 @@
 package com.example.fitnesscentarchat.ui.screens.hub
 
 import com.example.fitnesscentarchat.data.models.FitnessCenter
-import com.example.fitnesscentarchat.data.models.Membership
+import com.example.fitnesscentarchat.data.models.MembershipModel
+import com.example.fitnesscentarchat.data.models.MembershipPackage
+import com.example.fitnesscentarchat.data.models.User
 
 data class MembershipUiState(
     val isLoading: Boolean = false,
-    val membership: Membership? = null,
-    //val coaches
-    //val membershipPackages
+    val membershipPackages: List<MembershipPackage>,
+    val user: User,
+    val membership: MembershipModel? = null,
     val error: String? = null,
 )
+
+
+

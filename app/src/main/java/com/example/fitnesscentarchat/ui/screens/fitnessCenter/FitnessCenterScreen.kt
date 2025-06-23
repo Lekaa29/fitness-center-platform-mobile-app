@@ -26,7 +26,7 @@ fun FitnessCenterScreen(
     var currentUser by remember { mutableStateOf<Int?>(null) }
 
     LaunchedEffect(fitnessCenterId) {
-        currentUser = authRepository.getCurrentUser()?.Id
+        currentUser = authRepository.getCurrentUser()?.id
         viewModel.loadFitnessCenterHome(fitnessCenterId)
     }
 
