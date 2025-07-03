@@ -90,7 +90,7 @@ class MainActivity : ComponentActivity() {
                         }
 
                         composable("hub") {
-                            val viewModel = HubViewModel(fitnessCenterRepository)
+                            val viewModel = HubViewModel(fitnessCenterRepository, membershipRepository)
                             HubScreen(
                                 viewModel = viewModel,
                                 onFitnessCenterSelected = { fitnessCenterId ->

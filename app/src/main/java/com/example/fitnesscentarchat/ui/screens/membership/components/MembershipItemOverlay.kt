@@ -36,9 +36,9 @@ import com.example.fitnesscentarchat.data.models.MembershipPackage
 
 
 @Composable
-fun MembershipItemOverlay(membershipPackage: MembershipPackage, onBackClick: (Boolean) -> Unit) {
-    val title = membershipPackage.title ?: "title"
-    val price = membershipPackage.price?.toFloat() ?: 0.0f
+fun MembershipItemOverlay(membershipPackage: MembershipPackage?, onBackClick: (Boolean) -> Unit) {
+    val title = membershipPackage?.title ?: "title"
+    val price = membershipPackage?.price?.toFloat() ?: 0.0f
 
     var quantity by remember { mutableStateOf(1) }
 

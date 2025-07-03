@@ -50,11 +50,12 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.example.fitnesscentarchat.data.models.Article
 import com.example.fitnesscentarchat.data.models.Coach
+import com.example.fitnesscentarchat.data.models.Program
 
 
 @Composable
 fun SingleCoachView(
-    programs: List<Map<String, String>>,
+    programs: List<Program>,
     onBackClick: () -> Unit
 ) {
     Column(
@@ -93,12 +94,12 @@ fun SingleCoachView(
             verticalArrangement = Arrangement.spacedBy(16.dp),
             contentPadding = PaddingValues(vertical = 16.dp)
         ) {
-            items(programs) { Item ->
+            items(programs) { program ->
                 ProgramItemRow(
-                    name = Item["name"] ?: "",
-                    price = Item["price"] ?: "0.0",
-                    durationWeeks = Item["durationWeeks"] ?: "0",
-                    description = Item["description"] ?: "no description",
+                    name = program.title ?: "",
+                    price = program.price.toString() ?: "0.0",
+                    durationWeeks = program.weekDuration.toString() ?: "0",
+                    description = program.description ?: "no description",
                     onClick = { }
                 )
             }
@@ -148,8 +149,8 @@ fun SingleArticleView(
             item {
                 // Article Image
                 AsyncImage(
-                    model = article.covertPictureLink ?: "",
-                    contentDescription = article.covertPictureLink,
+                    model = article.coverPictureLink ?: "",
+                    contentDescription = article.coverPictureLink,
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(250.dp)
@@ -413,10 +414,6 @@ fun CoachesOverlay(
     onBackClick: () -> Unit
 ) {
     var selectedArticle by remember { mutableStateOf<Coach?>(null) }
-    val programs = listOf(
-        mapOf("name" to "Full Body Muškarci", "price" to "15", "durationWeeks" to "7", "description" to "8 tjedana push pull legs 6 treninga tjedno"),
-        mapOf("name" to "Weight Loss", "price" to "15", "durationWeeks" to "7", "description" to "8 tjedana push pull legs 6 treninga tjedno"),
-    )
 
     Box(
         modifier = Modifier
@@ -467,7 +464,7 @@ fun CoachesOverlay(
                     )
                 ) {
                     SingleCoachView(
-                        programs = programs,
+                        programs = selectedArticle!!.programs,
                         onBackClick = { selectedArticle = null }
                     )
                 }

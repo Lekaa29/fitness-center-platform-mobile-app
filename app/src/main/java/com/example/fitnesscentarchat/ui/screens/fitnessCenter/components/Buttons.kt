@@ -63,6 +63,7 @@ fun transparentButton(text: String, onClick: () -> Unit){
 
 @Composable
 fun TopActionsContainer(soonLeaving: Int?) {
+    val newSoonLeaving = soonLeaving ?: 0
 
     Box (
         modifier = Modifier.height(114.dp)
@@ -78,7 +79,7 @@ fun TopActionsContainer(soonLeaving: Int?) {
 
                 ) {
                 Row(){
-                    Text(text = "$soonLeaving", fontSize = 72.sp, color = Color(0xFFFFFFFF))
+                    Text(text = "$newSoonLeaving", fontSize = 72.sp, color = Color(0xFFFFFFFF))
 
                     Image(
                         painter = painterResource(id = R.drawable.icons8_exit_100),
@@ -138,7 +139,7 @@ fun Line(color: Color){
 }
 
 @Composable
-fun TopBarContent(currentUser: User
+fun TopBarContent(currentUser: User?
 ) {
     Row(
         modifier = Modifier
@@ -158,7 +159,7 @@ fun TopBarContent(currentUser: User
 @Composable
 fun BackgroundTopBar(
     showNewsOverlay: Boolean,
-    currentUser: User
+    currentUser: User?
 ) {
 
 

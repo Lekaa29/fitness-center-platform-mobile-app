@@ -6,6 +6,7 @@ import java.time.LocalDateTime
 data class MembershipModel(
     @Json(name = "idMembership") val idMembership: Int,
     @Json(name = "idUser") val idUser: Int,
+    @Json(name = "idMembershipPackage") val idMembershipPackage: Int?,
     @Json(name = "idFitnessCentar") val idFitnessCentar: Int,
     @Json(name = "points") val points: Int?,
     @Json(name = "loyaltyPoints") val loyaltyPoints: Int?,

@@ -155,7 +155,7 @@ fun NewsDetailOverlay(
                         items(newsItems) { newsItem ->
                             NewsItemRow(
                                 title = newsItem.title ?: "",
-                                imageUrl = newsItem.covertPictureLink ?: "",
+                                imageUrl = newsItem.coverPictureLink ?: "",
                                 onClick = { selectedArticle = newsItem }
                             )
                         }

@@ -26,18 +26,23 @@ import androidx.compose.ui.graphics.ColorMatrix
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import java.time.LocalDateTime
+import java.time.ZoneOffset
+import java.time.format.DateTimeFormatter
+import java.time.temporal.ChronoUnit
 
 
 @Composable
 fun gymCard(
     onFitnessCenterSelected: (Int) -> Unit,
     gymName: String?,
-    description: String?,
+    deadline: String?,
     imageUrl: String?,
     itemWidth: Dp,
     itemHeight: Dp,
     idFitnessCentar: Int
 ) {
+    val newDeadline = getExpiryStatus(deadline)
     Box(
         modifier = Modifier
             .clickable {
@@ -80,7 +85,7 @@ fun gymCard(
                 fontWeight = FontWeight.ExtraBold
             )
             Text(
-                text = description ?: "",
+                text = newDeadline,
                 color = Color.White,
                 fontSize = 12.sp,
                 fontWeight = FontWeight.Light
@@ -89,6 +94,25 @@ fun gymCard(
     }
 }
 
+fun getExpiryStatus(deadline: String?): String {
+    if (deadline.isNullOrEmpty()) return "No deadline"
+
+    return try {
+        val formatter = DateTimeFormatter.ISO_DATE_TIME // Example format: "2024-06-25T14:30:00Z"
+        val deadlineTime = LocalDateTime.parse(deadline, formatter)
+        val now = LocalDateTime.now(ZoneOffset.UTC)
+
+        val daysRemaining = ChronoUnit.DAYS.between(now.toLocalDate(), deadlineTime.toLocalDate())
+
+        when {
+            daysRemaining > 0 -> "Expires in $daysRemaining days"
+            daysRemaining == 0L -> "Expires today"
+            else -> "Expired"
+        }
+    } catch (e: Exception) {
+        "Invalid date format"
+    }
+}
 
 
 @Composable

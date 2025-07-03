@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -21,10 +22,11 @@ import com.example.fitnesscentarchat.data.models.MembershipModel
 import com.example.fitnesscentarchat.data.models.User
 
 @Composable
-fun TopTextSection(user: User, membership: MembershipModel?, onTopTextPositioned: (Float) -> Unit) {
-
+fun TopTextSection(user: User?, membership: MembershipModel?, onTopTextPositioned: (Float) -> Unit) {
+    val newUsername = user?.username ?: "-"
+    val expires = membership?.membershipDeadline ?: "-.-.----"
     Column(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally
     ){
         Row(){
@@ -44,12 +46,11 @@ fun TopTextSection(user: User, membership: MembershipModel?, onTopTextPositioned
                     Text("MEMBERSHIP", color= Color(0xFFFFFFFF),modifier= Modifier.padding(8.dp)
                     )
                 }
-                Spacer(modifier = Modifier.size(10.dp))
-                Text("$user.username", color= Color(0xFFFFFFFF),modifier= Modifier.padding(8.dp), fontSize=20.sp)
-                Text("Expires: ${membership?.membershipDeadline ?: ""}", color= Color(0xFFFFFFFF),modifier= Modifier.padding(8.dp), fontSize=16.sp)
+                Spacer(modifier = Modifier.size(8.dp))
+                Text("$newUsername", color= Color(0xFFFFFFFF),modifier= Modifier.padding(8.dp), fontSize=20.sp)
+                Text("Expires: ${expires}", color= Color(0xFFFFFFFF),modifier= Modifier.padding(8.dp), fontSize=16.sp)
             }
         }
-        Spacer(modifier = Modifier.size(30.dp))
 
 
     }

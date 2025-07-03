@@ -3,7 +3,6 @@ package com.example.fitnesscentarchat.data.repository
 import android.util.Log
 import com.example.fitnesscentarchat.data.api.ChatApiService
 import com.example.fitnesscentarchat.data.models.Conversation
-import com.example.fitnesscentarchat.data.models.Membership
 import com.example.fitnesscentarchat.data.models.Message
 import com.example.fitnesscentarchat.data.models.ShopItem
 import com.example.fitnesscentarchat.data.repository.interfaces.IAuthRepository

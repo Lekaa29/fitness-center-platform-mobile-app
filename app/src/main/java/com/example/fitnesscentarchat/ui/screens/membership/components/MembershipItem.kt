@@ -1,5 +1,6 @@
 package com.example.fitnesscentarchat.ui.screens.membership.components
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
@@ -15,6 +16,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -29,11 +31,16 @@ import androidx.compose.ui.unit.sp
 import com.example.fitnesscentarchat.data.models.MembershipPackage
 
 
+
 @Composable
-fun MembershipItem(membershipPackage: MembershipPackage, onClick: (Boolean) -> Unit) {
+fun MembershipItem(
+    membershipPackage: MembershipPackage,
+    onClick: () -> Unit // Changed to simple callback
+) {
     val title = membershipPackage.title ?: "title"
-    val price = membershipPackage.price.toString() ?: ""
+    val price = membershipPackage.price.toString()
     val discount = membershipPackage.discount
+    Log.d("item", "$membershipPackage")
 
     Column(
         modifier = Modifier
@@ -43,12 +50,12 @@ fun MembershipItem(membershipPackage: MembershipPackage, onClick: (Boolean) -> U
                 detectTapGestures(
                     onTap = {
                         println("DEBUG: Item clicked - $title")
-                        onClick(true)
+                        onClick() // Call the onClick callback
                     }
                 )
             }
             .background(
-                color = Color(0x2DCECECE),
+                color = Color(0x36CECECE),
                 shape = RoundedCornerShape(12.dp)
             )
             .padding(12.dp),
@@ -60,20 +67,22 @@ fun MembershipItem(membershipPackage: MembershipPackage, onClick: (Boolean) -> U
             fontWeight = FontWeight.Bold,
             color = Color.White,
             fontSize = 28.sp,
-            textAlign = TextAlign.Center // Center the text within its bounds
+            textAlign = TextAlign.Center
         )
-        if(discount != null) {
+
+        if (discount != null && discount != 0) {
             Spacer(modifier = Modifier.height(16.dp))
-        }else{
+        } else {
             Spacer(modifier = Modifier.height(30.dp))
         }
-        if(discount != null){
+
+        if (discount != null && discount != 0) {
             Text(
                 text = "$discount OFF",
                 fontWeight = FontWeight.Normal,
                 color = Color.Red,
                 fontSize = 18.sp,
-                textAlign = TextAlign.Center // Center the text within its bounds
+                textAlign = TextAlign.Center
             )
         }
 
@@ -81,7 +90,7 @@ fun MembershipItem(membershipPackage: MembershipPackage, onClick: (Boolean) -> U
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 4.dp),
-            horizontalArrangement = Arrangement.Center // Center the price box
+            horizontalArrangement = Arrangement.Center
         ) {
             Box(
                 modifier = Modifier
@@ -100,17 +109,23 @@ fun MembershipItem(membershipPackage: MembershipPackage, onClick: (Boolean) -> U
 }
 
 @Composable
-fun MembershipItems(membershipPackages: List<MembershipPackage>, onMembershipItemChange: (Boolean) -> Unit) {
+fun MembershipItems(
+    membershipPackages: List<MembershipPackage>,
+    onItemClick: (Int) -> Unit // Changed to pass index
+) {
+    Log.d("membership", "${membershipPackages.size}")
     LazyColumn(
-        modifier = Modifier
-            .fillMaxSize()
-            .height(700.dp),
+        modifier = Modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(12.dp),
-        horizontalAlignment = Alignment.CenterHorizontally, // This centers each item
+        horizontalAlignment = Alignment.CenterHorizontally,
         contentPadding = PaddingValues(12.dp)
     ) {
-        items(membershipPackages) { membershipPackage -> // Direct iteration, no chunking needed
-            MembershipItem(membershipPackage = membershipPackage, onClick = onMembershipItemChange)
+        itemsIndexed(membershipPackages) { index, membershipPackage ->
+            Log.d("package", "$membershipPackage")
+            MembershipItem(
+                membershipPackage = membershipPackage,
+                onClick = { onItemClick(index) } // Pass the index when clicked
+            )
         }
     }
 }

@@ -38,7 +38,7 @@ class ProfileViewModel(
                     onSuccess = { attendances ->
                         Log.d("ProfileViewModel", "Successfully loaded ${attendances.size} attendances")
                         attendances.forEach { attendance ->
-                            Log.d("ProfileViewModel", "Attendance: ID=${attendance.IdAttendance}, Timestamp=${attendance.Timestamp}")
+                            Log.d("ProfileViewModel", "Attendance: ID=${attendance.idAttendance}, Timestamp=${attendance.timestamp}")
                         }
                         _uiState.update {
                             it.copy(
@@ -59,9 +59,32 @@ class ProfileViewModel(
                     }
                 )
 
+                membershipRepository.GetCurrentUserMemberships().fold(
+                    onSuccess = { memberships ->
+                        Log.d("ProfileViewModel", "Successfully loaded ${memberships.size} memberships")
+
+                        _uiState.update {
+                            it.copy(
+                                memberships = memberships,
+                                isLoading = false,
+                                error = null
+                            )
+                        }
+                    },
+                    onFailure = { error ->
+                        Log.e("ProfileViewModel", "Failed to load memberships: ${error.message}", error)
+                        _uiState.update {
+                            it.copy(
+                                error = error.message ?: "Failed to load memberships",
+                                isLoading = false
+                            )
+                        }
+                    }
+                )
+
                 // Load user info
                 val currentUser = authRepository.getCurrentUser()
-                Log.d("ProfileViewModel", "Current user: ${currentUser?.FirstName}")
+                Log.d("ProfileViewModel", "Current user: ${currentUser?.firstName}")
                 _uiState.update {
                     it.copy(
                         user = currentUser

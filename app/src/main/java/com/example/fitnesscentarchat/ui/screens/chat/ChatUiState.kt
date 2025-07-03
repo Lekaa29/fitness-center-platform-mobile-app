@@ -14,6 +14,6 @@ data class ChatUiState(
 ){
     // Add explicit toString for debugging
     override fun toString(): String {
-        return "ChatUiState(messages.size=${messages.size}, isLoading=$isLoading, isSending=$isSending, error=$error, chatPartner=${chatPartner?.FirstName})"
+        return "ChatUiState(messages.size=${messages.size}, isLoading=$isLoading, isSending=$isSending, error=$error, chatPartner=${chatPartner?.firstName})"
     }
 }

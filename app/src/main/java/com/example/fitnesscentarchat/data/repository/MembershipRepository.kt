@@ -4,6 +4,7 @@ import android.util.Log
 import com.example.fitnesscentarchat.data.api.ChatApiService
 import com.example.fitnesscentarchat.data.models.Conversation
 import com.example.fitnesscentarchat.data.models.MembershipModel
+import com.example.fitnesscentarchat.data.models.MembershipPackage
 import com.example.fitnesscentarchat.data.models.Message
 import com.example.fitnesscentarchat.data.repository.interfaces.IAuthRepository
 import com.example.fitnesscentarchat.data.repository.interfaces.IMembershipRepository
@@ -32,10 +33,25 @@ class MembershipRepository(
         }
     }
 
+    override suspend fun GetFitnessCenterMembershipPackages(fitnessCenterId: Int): Result<List<MembershipPackage>> {
+        return try {
+            Result.success(apiService.getFitnessCenterMembershipPackages(fitnessCenterId))
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
 
     override suspend fun GetUserMembershipByFitnessCenter(fitnessCenterId: Int): Result<MembershipModel> {
         return try {
             Result.success(apiService.getUserMembershipByFitnessCenter(fitnessCenterId))
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+    override suspend fun GetFitnessCenterLeaderboard(fitnessCenterId: Int): Result<List<MembershipModel>> {
+        return try {
+            Result.success(apiService.getFitnessCenterLeaderboard(fitnessCenterId))
         } catch (e: Exception) {
             Result.failure(e)
         }
@@ -60,7 +76,10 @@ class MembershipRepository(
                 fitnessCentarBannerUrl = null,
                 fitnessCentarName = null,
                 membershipDeadline = null,
-                points = null
+                points = null,
+                fitnessCentarLogoUrl = null,
+                username = null,
+                idMembershipPackage = null
             )
 
 

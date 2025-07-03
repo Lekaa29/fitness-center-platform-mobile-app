@@ -13,7 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.fitnesscentarchat.data.models.FitnessCenter
-import com.example.fitnesscentarchat.ui.screens.hub.components.Background
+import com.example.fitnesscentarchat.ui.screens.hub.components.HubContent
 import com.example.fitnesscentarchat.ui.screens.map.MapScreen
 
 
@@ -42,7 +42,7 @@ fun HubScreen(
             selectedGymForMap,
             uiState)
     } else {
-        Background(
+        HubContent(
             onFitnessCenterSelected,
             uiState,
             onMapClick = { isMapMode = true },
@@ -59,31 +59,6 @@ fun HubScreen(
 
     }
 
-
-    Scaffold(
-
-    ) { paddingValues ->
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-        ) {
-            if (uiState.isLoading && uiState.fitnessCenters.isEmpty()) {
-                CircularProgressIndicator(
-                    modifier = Modifier.align(Alignment.Center)
-                )
-            } else if (uiState.fitnessCenters.isEmpty()) {
-                Text(
-                    text = "No fitness centers found",
-                    modifier = Modifier.align(Alignment.Center)
-                )
-            } else {
-
-            }
-
-
-        }
-    }
 
 
 

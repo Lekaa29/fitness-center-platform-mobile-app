@@ -51,7 +51,8 @@ fun FitnessCenterWithBottomNav(
     }
 
     val membershipViewModel = remember {
-        MembershipViewModel(membershipRepository = membershipRepository)
+        MembershipViewModel(membershipRepository = membershipRepository,
+            authRepository = authRepository)
     }
 
     val profileViewModel = remember {
@@ -177,7 +178,8 @@ fun FitnessCenterWithPrecomposedScreens(
     }
 
     val membershipViewModel = remember {
-        MembershipViewModel(membershipRepository = membershipRepository)
+        MembershipViewModel(membershipRepository = membershipRepository,
+            authRepository = authRepository)
     }
 
     val profileViewModel = remember {

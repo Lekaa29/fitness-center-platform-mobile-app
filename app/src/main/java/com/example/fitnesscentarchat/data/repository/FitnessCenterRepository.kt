@@ -2,6 +2,8 @@ package com.example.fitnesscentarchat.data.repository
 
 import android.util.Log
 import com.example.fitnesscentarchat.data.api.ChatApiService
+import com.example.fitnesscentarchat.data.models.Article
+import com.example.fitnesscentarchat.data.models.Coach
 import com.example.fitnesscentarchat.data.models.Conversation
 import com.example.fitnesscentarchat.data.models.FitnessCenter
 import com.example.fitnesscentarchat.data.models.Message
@@ -39,5 +41,44 @@ class FitnessCenterRepository(
             Result.failure(e)
         }
     }
+    override suspend fun GetClosestFitnessCentars(userLat:Double, userLng:Double) : Result<List<FitnessCenter>> {
+        return try{
+            Result.success(apiService.getClosestFitnessCentars(userLat, userLng))
+
+        } catch(e: Exception){
+            Result.failure(e)
+        }
+    }
+
+
+    override suspend fun GetFitnessCentarsCoaches(fitnessCenterId: Int) : Result<List<Coach>> {
+        return try{
+            Result.success(apiService.getFitnessCentarsCoaches(fitnessCenterId))
+
+        } catch(e: Exception){
+            Result.failure(e)
+        }
+    }
+
+    override suspend fun GetFitnessCenterArticles(fitnessCenterId: Int) : Result<List<Article>> {
+        return try{
+            Result.success(apiService.getFitnessCenterArticles(fitnessCenterId))
+
+        } catch(e: Exception){
+            Result.failure(e)
+        }
+    }
+
+
+
+    override suspend fun GetPromoFitnessCenters() : Result<List<FitnessCenter>> {
+        return try{
+            Result.success(apiService.getPromoFitnessCenters())
+
+        } catch(e: Exception){
+            Result.failure(e)
+        }
+    }
+
 
 }

@@ -41,7 +41,7 @@ fun TopBarContent(
     onSearchTextChange: (String) -> Unit,
     onSearchExpandChange: (Boolean) -> Unit,
     onMapClick: () -> Unit,
-    currentUser: User
+    currentUser: User?
 ) {
     Box(
         modifier = Modifier
@@ -98,7 +98,7 @@ fun BackgroundTopBar(
     isSearchExpanded: Boolean,
     onSearchExpandedChange: (Boolean) -> Unit,
     onSearchTextChange: (String) -> Unit,
-    currentUser:User,
+    currentUser:User?,
     onMapClick: () -> Unit
 ) {
 
@@ -125,7 +125,7 @@ fun BackgroundTopBar(
 
 
 @Composable
-fun ProfileButton(currentUser: User, size: Dp) {
+fun ProfileButton(currentUser: User?, size: Dp) {
     Box(
         modifier = Modifier
             .size(40.dp)
@@ -134,7 +134,7 @@ fun ProfileButton(currentUser: User, size: Dp) {
             .clickable { /* TODO: Profile click action */ },
         contentAlignment = Alignment.Center
     ) {
-        if (currentUser.pictureLink != null) {
+        if (currentUser?.pictureLink != null && currentUser.pictureLink != "") {
             AsyncImage(
                 model = ImageRequest.Builder(LocalContext.current)
                     .data(currentUser.pictureLink)
@@ -147,7 +147,7 @@ fun ProfileButton(currentUser: User, size: Dp) {
             )
         } else {
             Text(
-                text = "${currentUser.firstName.first()}${currentUser.lastName.first()}",
+                text = "${currentUser?.firstName?.first()}${currentUser?.lastName?.first()}",
                 color = Color.White,
                 fontWeight = FontWeight.Bold
             )

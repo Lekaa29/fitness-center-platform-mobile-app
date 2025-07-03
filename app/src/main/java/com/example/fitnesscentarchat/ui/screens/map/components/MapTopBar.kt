@@ -68,7 +68,7 @@ fun MapButton(onBackClick: () -> Unit) {
 
 
 @Composable
-fun MapTopBar(onBackClick: () -> Unit, modifier:Modifier, currentUser: User) {
+fun MapTopBar(onBackClick: () -> Unit, modifier:Modifier, currentUser: User?) {
 
     Box(
         modifier = Modifier
@@ -87,7 +87,7 @@ fun MapTopBar(onBackClick: () -> Unit, modifier:Modifier, currentUser: User) {
             Spacer(modifier = Modifier.size(1.dp))
             MapButton(onBackClick = onBackClick)
             Spacer(modifier = Modifier.size(1.dp))
-            ProfileButton(currentUser)
+            ProfileButton(currentUser, 36.dp)
         }
     }
 }

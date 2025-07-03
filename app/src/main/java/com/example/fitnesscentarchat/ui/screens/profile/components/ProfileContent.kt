@@ -1,5 +1,7 @@
 package com.example.fitnesscentarchat.ui.screens.profile.components
 
+import android.net.Uri
+import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.tween
@@ -26,12 +28,15 @@ import androidx.compose.ui.unit.dp
 import com.example.fitnesscentarchat.ui.screens.profile.ProfileUiState
 
 @Composable
-fun BackgroundScrollableContent(
+fun ProfileContent(
     uiState: ProfileUiState,
     scrollState: androidx.compose.foundation.ScrollState,
     onTopTextPositioned: (Float) -> Unit,
     onEditProfileChange: (Boolean) -> Unit,
-    editProfileOverlay: Boolean
+    editProfileOverlay: Boolean,
+    imagePickerLauncher : ManagedActivityResultLauncher<String, Uri?>,
+    isUploading :Boolean,
+    uploadError :String?
 ) {
 
 
@@ -89,7 +94,10 @@ fun BackgroundScrollableContent(
         ) {
             EditUserOverlay(
                 user = uiState.user,
-                onBackClick = { onEditProfileChange(false) }
+                onBackClick = { onEditProfileChange(false) },
+                imagePickerLauncher,
+                isUploading
+
             )
         }
 

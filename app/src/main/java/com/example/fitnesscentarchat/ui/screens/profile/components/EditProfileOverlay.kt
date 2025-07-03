@@ -1,5 +1,7 @@
 package com.example.fitnesscentarchat.ui.screens.profile.components
 
+import android.net.Uri
+import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -40,6 +42,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import com.example.fitnesscentarchat.data.models.User
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -47,7 +50,8 @@ import coil.compose.AsyncImage
 fun SimpleTextField(
     value: String,
     onValueChange: (String) -> Unit,
-    placeholder: String
+    placeholder: String,
+
 ) {
     TextField(
         value = value,
@@ -84,7 +88,10 @@ fun SimpleTextField(
 
 
 @Composable
-fun EditUserOverlay(user: User?, onBackClick: (Boolean) -> Unit) {
+fun EditUserOverlay(user: User?,
+                    onBackClick: (Boolean) -> Unit,
+                    imagePickerLauncher : ManagedActivityResultLauncher<String, Uri?>,
+                    isUploading :Boolean) {
     val userName = user?.username as? String ?: "noname"
     val userFirstName = user?.firstName as? String ?: ""
     val userLastName = user?.lastName as? String ?: ""
@@ -159,11 +166,14 @@ fun EditUserOverlay(user: User?, onBackClick: (Boolean) -> Unit) {
                             .background(Color(0xFF333333)),
                         contentScale = ContentScale.Crop
                     )
+
                     Button(
                         onClick = {
-                            // Handle save logic here
-                            onBackClick(true)
+                            if (!isUploading) {
+                                imagePickerLauncher.launch("image/*")
+                            }
                         },
+                        enabled = !isUploading,
                         colors = ButtonDefaults.buttonColors(
                             containerColor = Color(0xF216707C)
                         ),
@@ -195,7 +205,8 @@ fun EditUserOverlay(user: User?, onBackClick: (Boolean) -> Unit) {
                     SimpleTextField(
                         value = usernameInput,
                         onValueChange = { usernameInput = it },
-                        placeholder = "Enter username"
+                        placeholder = "Enter username",
+
                     )
 
                     // First name

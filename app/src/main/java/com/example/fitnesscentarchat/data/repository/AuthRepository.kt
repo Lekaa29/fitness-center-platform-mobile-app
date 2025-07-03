@@ -27,8 +27,8 @@ class AuthRepository(
             // Save auth info
             with(sharedPreferences.edit()) {
                 putString(KEY_TOKEN, response.token)
-                putInt(KEY_USER_ID, response.user.Id)
-                putString(KEY_USERNAME, response.user.FirstName)
+                putInt(KEY_USER_ID, response.user.id)
+                putString(KEY_USERNAME, response.user.firstName)
                 apply()
             }
             Log.d("Token", "Stored token: ${response.token}")
@@ -47,8 +47,8 @@ class AuthRepository(
             // Save auth info
             with(sharedPreferences.edit()) {
                 putString(KEY_TOKEN, response.token)
-                putInt(KEY_USER_ID, response.user.Id)
-                putString(KEY_USERNAME, response.user.FirstName)
+                putInt(KEY_USER_ID, response.user.id)
+                putString(KEY_USERNAME, response.user.firstName)
                 apply()
             }
 

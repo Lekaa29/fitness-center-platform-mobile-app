@@ -1,7 +1,9 @@
 package com.example.fitnesscentarchat.ui.screens.hub
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.fitnesscentarchat.data.repository.AuthRepository
 import com.example.fitnesscentarchat.data.repository.FitnessCenterRepository
 import com.example.fitnesscentarchat.data.repository.MembershipRepository
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -11,7 +13,8 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class MembershipViewModel(
-    private val membershipRepository: MembershipRepository
+    private val membershipRepository: MembershipRepository,
+    private val authRepository: AuthRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(MembershipUiState())
@@ -36,6 +39,28 @@ class MembershipViewModel(
                     }
                 }
             )
+
+
+            membershipRepository.GetFitnessCenterMembershipPackages(fitnessCenterId).fold(
+                onSuccess = { membershipPackages ->
+                    _uiState.update { it.copy(membershipPackages = membershipPackages, isLoading = false) }
+                },
+                onFailure = { error ->
+                    _uiState.update {
+                        it.copy(
+                            error = error.message ?: "Failed to load membership",
+                            isLoading = false
+                        )
+                    }
+                }
+            )
+
+            val currentUser = authRepository.getCurrentUser()
+            _uiState.update {
+                it.copy(
+                    user = currentUser
+                )
+            }
         }
     }
 

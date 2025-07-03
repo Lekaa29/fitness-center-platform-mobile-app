@@ -77,7 +77,7 @@ fun NearMembershipsTable(
                     }
 
                     Text(
-                        text = center.distanceInMeters.toString(),
+                        text = distanceToString(center.distanceInMeters),
                         color = Color(0xFFFFFFFF),
                         fontWeight = FontWeight.Bold
                     )
@@ -104,5 +104,14 @@ fun NearMembershipsTable(
             }
 
         }
+    }
+}
+
+fun distanceToString(distance: Double?): String {
+    val newDistance = distance ?: 0.0
+    return if (newDistance > 1000) {
+        String.format("%.1f km", newDistance / 1000)
+    } else {
+        "${Math.round(newDistance)} m"
     }
 }

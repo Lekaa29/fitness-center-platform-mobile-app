@@ -34,7 +34,7 @@ import com.example.fitnesscentarchat.data.models.FitnessCenter
 import com.example.fitnesscentarchat.ui.screens.hub.HubUiState
 
 @Composable
-fun Background(
+fun HubContent(
     onFitnessCenterSelected: (Int) -> Unit,
     uiState: HubUiState,
     onMapClick: () -> Unit,

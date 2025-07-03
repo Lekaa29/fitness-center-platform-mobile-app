@@ -30,12 +30,82 @@ class FitnessCenterViewModel(
 
             attendanceRepository.GetRecentAttendees(fitnessCenterId).fold(
                 onSuccess = { recentAttendees ->
-                    _uiState.update { it.copy(recentAttendance = recentAttendees.size, isLoading = false) }
+                    _uiState.update { it.copy(recentAttendance = recentAttendees, isLoading = false) }
                 },
                 onFailure = { error ->
                     _uiState.update {
                         it.copy(
                             error = error.message ?: "Failed to load recent Attendance",
+                            isLoading = false
+                        )
+                    }
+                }
+            )
+
+            attendanceRepository.GetAllAttendences(fitnessCenterId).fold(
+                onSuccess = { allAttendences ->
+                    _uiState.update { it.copy(allAttendances = allAttendences, isLoading = false) }
+                },
+                onFailure = { error ->
+                    _uiState.update {
+                        it.copy(
+                            error = error.message ?: "Failed to load all Attendance",
+                            isLoading = false
+                        )
+                    }
+                }
+            )
+
+            fitnessCenterRepository.GetFitnessCentarsCoaches(fitnessCenterId).fold(
+                onSuccess = { coaches ->
+                    _uiState.update { it.copy(coaches = coaches, isLoading = false) }
+                },
+                onFailure = { error ->
+                    _uiState.update {
+                        it.copy(
+                            error = error.message ?: "Failed to load coaches",
+                            isLoading = false
+                        )
+                    }
+                }
+            )
+
+            membershipRepository.GetFitnessCenterLeaderboard(fitnessCenterId).fold(
+                onSuccess = { memberships ->
+                    _uiState.update { it.copy(leaderboard = memberships, isLoading = false) }
+                },
+                onFailure = { error ->
+                    _uiState.update {
+                        it.copy(
+                            error = error.message ?: "Failed to load leaderboard",
+                            isLoading = false
+                        )
+                    }
+                }
+            )
+
+            fitnessCenterRepository.GetFitnessCenterArticles(fitnessCenterId).fold(
+                onSuccess = { articles ->
+                    _uiState.update { it.copy(news = articles, isLoading = false) }
+                },
+                onFailure = { error ->
+                    _uiState.update {
+                        it.copy(
+                            error = error.message ?: "Failed to load news articles",
+                            isLoading = false
+                        )
+                    }
+                }
+            )
+
+            attendanceRepository.GetLeavingAttendees(fitnessCenterId).fold(
+                onSuccess = { leavingAttendees ->
+                    _uiState.update { it.copy(soonLeaving = leavingAttendees, isLoading = false) }
+                },
+                onFailure = { error ->
+                    _uiState.update {
+                        it.copy(
+                            error = error.message ?: "Failed to load leaving Attendance",
                             isLoading = false
                         )
                     }

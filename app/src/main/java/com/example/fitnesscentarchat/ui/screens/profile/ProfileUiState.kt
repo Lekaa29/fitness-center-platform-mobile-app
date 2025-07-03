@@ -1,7 +1,6 @@
 package com.example.fitnesscentarchat.ui.screens.profile
 
 import com.example.fitnesscentarchat.data.models.Attendance
-import com.example.fitnesscentarchat.data.models.Membership
 import com.example.fitnesscentarchat.data.models.MembershipModel
 import com.example.fitnesscentarchat.data.models.User
 

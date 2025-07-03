@@ -44,7 +44,7 @@ fun ShopScreen(
     LaunchedEffect(fitnessCenterId) {
         coroutineScope.launch {
             launch {
-                currentUser = authRepository.getCurrentUser()?.Id
+                currentUser = authRepository.getCurrentUser()?.id
             }
             launch {
                 viewModel.loadShop(fitnessCenterId)
@@ -54,11 +54,7 @@ fun ShopScreen(
 
 
     Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("Available Users") }
-            )
-        }
+
     ) { paddingValues ->
         Box(
             modifier = Modifier

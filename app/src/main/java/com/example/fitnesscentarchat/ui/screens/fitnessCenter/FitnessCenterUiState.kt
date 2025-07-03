@@ -10,7 +10,7 @@ import com.example.fitnesscentarchat.data.models.MembershipModel
 data class FitnessCenterUiState(
     val isLoading: Boolean = false,
     val fitnessCenter: FitnessCenter? = null,
-    val allAttendance: List<Attendance> = emptyList(),
+    val allAttendances: List<Attendance> = emptyList(),
     val recentAttendance: Int? = null,
     val soonLeaving: Int? = null,
     val error: String? = null,
@@ -18,3 +18,5 @@ data class FitnessCenterUiState(
     val coaches: List<Coach> = emptyList(),
     val leaderboard: List<MembershipModel> = emptyList()
 )
+
+

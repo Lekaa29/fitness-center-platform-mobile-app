@@ -34,7 +34,7 @@ fun PromotionMembershipsRow(
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(itemHeight-24.dp) // ensures same height as background
+            .height(itemHeight - 24.dp) // ensures same height as background
     ) {
         // Blurred background
         Box(
@@ -56,7 +56,7 @@ fun PromotionMembershipsRow(
             verticalAlignment = Alignment.CenterVertically
         ) {
             items(fitnessCenters) { center ->
-                gymPromoCard(onFitnessCenterSelected,"%${center.promotion} MONTH", center.name, center.pictureLink, itemWidth, itemHeight-36.dp, center.idFitnessCentar)
+                gymPromoCard(onFitnessCenterSelected,"${center.promotion}% MEMBERSHIP", center.name, center.pictureLink, itemWidth, itemHeight-36.dp, center.idFitnessCentar)
             }
         }
     }

@@ -1,5 +1,6 @@
 package com.example.fitnesscentarchat.ui.screens.hub
 
+import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -8,6 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.fitnesscentarchat.data.repository.AuthRepository
+import com.example.fitnesscentarchat.ui.screens.membership.components.MembershipContent
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
@@ -23,24 +25,23 @@ fun MembershipScreen(
     val uiState by remember {
         viewModel.uiState
     }.collectAsStateWithLifecycle()
-
     var currentUser by remember { mutableStateOf<Int?>(null) }
 
     val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSSSSS")
 
+    var topTextOffsetY by remember { mutableStateOf(0f) }
+
+    var membershipItemOverlay by remember { mutableStateOf(false) }
 
 
     LaunchedEffect(fitnessCenterId) {
-        currentUser = authRepository.getCurrentUser()?.Id
+        currentUser = authRepository.getCurrentUser()?.id
         viewModel.loadMembership(fitnessCenterId)
     }
+    Log.d("packages", "${uiState.membershipPackages}")
 
     Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("Fitness Center HOME") }
-            )
-        }
+
     ) { paddingValues ->
         Box(
             modifier = Modifier
@@ -51,45 +52,17 @@ fun MembershipScreen(
                 CircularProgressIndicator(
                     modifier = Modifier.align(Alignment.Center)
                 )
-            } else if (uiState.membership == null) {
-                Text(
-                    text = "No membership found",
-                    modifier = Modifier.align(Alignment.Center)
-                )
             } else {
-                Column {
-                    uiState.membership?.let { membership ->
-                        Column(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .padding(16.dp)
-                        ) {
-                            val deadline = LocalDateTime.parse(membership.MembershipDeadline, formatter)
-                            val daysRemaining = ChronoUnit.DAYS.between(LocalDateTime.now(), deadline)
-
-                            Text(
-                                text = "${daysRemaining} days remaining...",
-                                style = MaterialTheme.typography.titleMedium,
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(vertical = 8.dp)
-                            )
-                            Text(
-                                text = "LOYALTY: ${membership.LoyaltyPoints.toString()}",
-                                style = MaterialTheme.typography.titleMedium,
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(vertical = 8.dp)
-                            )
-                            Text(
-                                text = "STREAK: ${membership.StreakRunCount.toString()}",
-                                style = MaterialTheme.typography.titleMedium,
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(vertical = 8.dp)
-                            )
-                        }
+                Box(modifier = Modifier.fillMaxSize()) {
+                    Box(){
+                        MembershipContent(
+                            onTopTextPositioned = { topTextOffsetY = it },
+                            onMembershipItemChange = { membershipItemOverlay = it},
+                            membershipItemOverlay = membershipItemOverlay,
+                            uiState = uiState
+                        )
                     }
+
                 }
             }
 
@@ -105,28 +78,3 @@ fun MembershipScreen(
         }
     }
 }
-
-/*
-
-@Composable
-fun Background(
-    modifier: Modifier = Modifier,
-) {
-
-    var topTextOffsetY by remember { mutableStateOf(0f) }
-
-    var membershipItemOverlay by remember { mutableStateOf(false) }
-
-    Box(modifier = Modifier.fillMaxSize()) {
-        Box(){
-            BackgroundScrollableContent(
-                onTopTextPositioned = { topTextOffsetY = it },
-                onMembershipItemChange = { membershipItemOverlay = it},
-                membershipItemOverlay = membershipItemOverlay,
-                uiState = MembershipUiState()
-            )
-        }
-
-    }
-}
- */

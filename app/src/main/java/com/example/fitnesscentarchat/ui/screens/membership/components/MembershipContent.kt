@@ -11,7 +11,9 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -22,10 +24,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.example.fitnesscentarchat.data.models.MembershipPackage
 import com.example.fitnesscentarchat.ui.screens.hub.MembershipUiState
+import okhttp3.internal.wait
 
 @Composable
-fun BackgroundScrollableContent(
+fun MembershipContent(
     uiState: MembershipUiState,
     onTopTextPositioned: (Float) -> Unit,
     onMembershipItemChange: (Boolean) -> Unit,
@@ -33,7 +37,6 @@ fun BackgroundScrollableContent(
 ) {
     // State management
     var selectedIndex by remember { mutableIntStateOf(0) }
-
 
     Box(modifier = Modifier.fillMaxSize()) {
         // Main content
@@ -54,12 +57,21 @@ fun BackgroundScrollableContent(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Spacer(modifier = Modifier.padding(20.dp))
-            TopTextSection(user=uiState.user, membership=uiState.membership, onTopTextPositioned = onTopTextPositioned)
+            TopTextSection(
+                user = uiState.user,
+                membership = uiState.membership,
+                onTopTextPositioned = onTopTextPositioned
+            )
 
-            MembershipItems(membershipPackages=uiState.membershipPackages, onMembershipItemChange)
-
-
+            MembershipItems(
+                membershipPackages = uiState.membershipPackages ?: emptyList(),
+                onItemClick = { index ->
+                    selectedIndex = index // Update selected index
+                    onMembershipItemChange(true) // Show overlay
+                }
+            )
         }
+
         AnimatedVisibility(
             visible = membershipItemOverlay,
             enter = fadeIn(
@@ -76,11 +88,9 @@ fun BackgroundScrollableContent(
             )
         ) {
             MembershipItemOverlay(
-                membershipPackage = uiState.membershipPackages[selectedIndex],
+                membershipPackage = uiState.membershipPackages?.getOrNull(selectedIndex),
                 onBackClick = { onMembershipItemChange(false) }
             )
         }
-
-
     }
 }

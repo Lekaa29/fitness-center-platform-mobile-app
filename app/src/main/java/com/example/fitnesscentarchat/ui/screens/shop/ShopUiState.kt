@@ -1,6 +1,5 @@
 package com.example.fitnesscentarchat.ui.screens.hub
 
-import com.example.fitnesscentarchat.data.models.Membership
 import com.example.fitnesscentarchat.data.models.ShopItem
 
 data class ShopUiState(

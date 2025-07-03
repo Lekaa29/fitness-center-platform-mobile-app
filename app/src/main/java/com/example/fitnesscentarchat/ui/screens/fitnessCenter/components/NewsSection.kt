@@ -73,7 +73,7 @@ fun NewsSection(newsList: List<Article>,
         LazyRow(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
             items(newsList.take(5)) { item ->
                 val title = item.title ?: ""
-                val imageUrl = item.covertPictureLink
+                val imageUrl = item.coverPictureLink
 
                 Box(
                     modifier = Modifier

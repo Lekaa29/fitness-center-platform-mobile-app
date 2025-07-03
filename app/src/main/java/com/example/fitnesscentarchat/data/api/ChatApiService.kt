@@ -27,31 +27,61 @@ interface ChatApiService {
     suspend fun getUserById(@Path("userId") userId: Int): User
 
 
-    @GET("FitnessCenter/{fitnessCenterId}")
-    suspend fun getFitnessCenter(@Path("fitnessCenterId") fitnessCenterId: Int) : FitnessCenter
+    @GET("FitnessCenter/{fitnessCentarId}")
+    suspend fun getFitnessCenter(@Path("fitnessCentarId") fitnessCentarId: Int) : FitnessCenter
 
     @GET("FitnessCenter")
     suspend fun getFitnessCenters() : List<FitnessCenter>
 
-    @GET("Membership/user")
-    suspend fun getCurrentUserMemberships(): List<Membership>
+    @GET("FitnessCenter/PromoFitnessCentars")
+    suspend fun getPromoFitnessCenters() : List<FitnessCenter>
+    @GET("FitnessCenter/coaches/{fitnessCentarId}")
+    suspend fun getFitnessCentarsCoaches(@Path("fitnessCentarId") fitnessCentarId: Int): List<Coach>
 
-    @GET("Membership/user/{fitnessCenterId}")
-    suspend fun getUserMembershipByFitnessCenter(@Path("fitnessCenterId") fitnessCenterId: Int): Membership
+    @GET("FitnessCenter/ClosestFitnessCentars")
+    suspend fun getClosestFitnessCentars(
+        @Query("userLat") userLat: Double,
+        @Query("userLng") userLng: Double
+    ): List<FitnessCenter>
+
+    @GET("Membership/user")
+    suspend fun getCurrentUserMemberships(): List<MembershipModel>
+
+    @GET("Membership/user/{fitnessCentarId}")
+    suspend fun getUserMembershipByFitnessCenter(@Path("fitnessCentarId") fitnessCentarId: Int): MembershipModel
+
+    @GET("Membership/MembershipPackages/{fitnessCentarId}")
+    suspend fun getFitnessCenterMembershipPackages(@Path("fitnessCentarId") fitnessCentarId: Int): List<MembershipPackage>
+
+    @GET("Membership/FitnessCenter/Leaderboard/{fitnessCentarId}")
+    suspend fun getFitnessCenterLeaderboard(@Path("fitnessCentarId") fitnessCentarId: Int): List<MembershipModel>
+
+
+
+    @GET("Article/articles/{fitnessCentarId}")
+    suspend fun getFitnessCenterArticles(@Path("fitnessCentarId") fitnessCentarId: Int): List<Article>
+
+
+
 
     @POST("Membership/UpdateMembership")
     suspend fun addMembership(
-        @Body membership: Membership
+        @Body membership: MembershipModel
     ): Response<Any>
 
     @GET("Attendance/users")
     suspend fun getCurrentUserAttendances(): List<Attendance>
 
-    @GET("Attendance/users/{fitnessCenterId}")
-    suspend fun getCurrentUserFitnessCenterAttendances(@Path("fitnessCenterId") fitnessCenterId: Int): List<Attendance>
+    @GET("Attendance/fitnesscenters/{fitnessCentarId}")
+    suspend fun getAllAttendences(@Path("fitnessCentarId") fitnessCentarId: Int): List<Attendance>
+    @GET("Attendance/fitnesscenters/leaving/{fitnessCentarId}")
+    suspend fun getLeavingAttendees(@Path("fitnessCentarId") fitnessCentarId: Int): Int
 
-    @GET("Attendance/fitnesscenters/recent/{fitnessCenterId}")
-    suspend fun getRecentAttendees(@Path("fitnessCenterId") fitnessCenterId: Int): List<Attendance>
+    @GET("Attendance/users/{fitnessCentarId}")
+    suspend fun getCurrentUserFitnessCenterAttendances(@Path("fitnessCentarId") fitnessCentarId: Int): List<Attendance>
+
+    @GET("Attendance/fitnesscenters/recent/{fitnessCentarId}")
+    suspend fun getRecentAttendees(@Path("fitnessCentarId") fitnessCentarId: Int): Int
 
     @POST("Attendance/AddAttendance")
     suspend fun addAttendance(
@@ -59,8 +89,8 @@ interface ChatApiService {
     ): Response<Any>
 
 
-    @GET("Shop/items/{fitnessCenterId}")
-    suspend fun getFitnessCenterItems(@Path("fitnessCenterId") fitnessCenterId: Int): List<ShopItem>
+    @GET("Shop/items/{fitnessCentarId}")
+    suspend fun getFitnessCenterItems(@Path("fitnessCentarId") fitnessCentarId: Int): List<ShopItem>
 
     @GET("Shop/items/users")
     suspend fun getUserItems(): List<ShopItem>

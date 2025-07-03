@@ -48,7 +48,7 @@ import kotlin.random.Random
 
 
 @Composable
-fun DateRangeAnalyzer(attendances: List<Attendance>, onBackClick: () -> Unit) {
+fun DateRangeAnalyzer(attendances: List<Attendance> = emptyList(), onBackClick: () -> Unit) {
     var weekOffset by remember { mutableStateOf(0) }
 
 

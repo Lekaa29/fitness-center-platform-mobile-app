@@ -8,7 +8,7 @@ data class HubUiState(
     val isLoading: Boolean = false,
     val fitnessCenters: List<FitnessCenter> = emptyList(),
     val error: String? = null,
-    val currentUser: User,
+    val currentUser: User? = null,
     val usersMemberships: List<MembershipModel> = emptyList(),
     val promoFitnessCentars: List<FitnessCenter> = emptyList(),
     val nearFitnessCentars: List<FitnessCenter> = emptyList()

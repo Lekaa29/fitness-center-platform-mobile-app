@@ -49,7 +49,7 @@ fun ChatScreen(
     // Add debugging to LaunchedEffect
     LaunchedEffect(conversationId) {
         Log.d("CHATSCREEN", "LaunchedEffect - calling loadChat($conversationId)")
-        currentUser = authRepository.getCurrentUser()?.Id
+        currentUser = authRepository.getCurrentUser()?.id
         viewModel.loadChat(conversationId)
     }
 
@@ -71,7 +71,7 @@ fun ChatScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(uiState.chatPartner?.FirstName ?: "Chat") },
+                title = { Text(uiState.chatPartner?.firstName ?: "Chat") },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
                         Icon(

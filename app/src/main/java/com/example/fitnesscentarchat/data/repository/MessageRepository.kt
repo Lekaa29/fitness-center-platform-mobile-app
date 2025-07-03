@@ -38,7 +38,7 @@ class MessageRepository(
 
             val message = Message(
                 id = 0,
-                senderId = currentUser.Id,
+                senderId = currentUser.id,
                 idConversation = conversationId,
                 text = content,
                 timestamp = ZonedDateTime.now().format(DateTimeFormatter.ISO_INSTANT),

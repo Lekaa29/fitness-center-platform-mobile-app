@@ -27,7 +27,10 @@ import androidx.compose.ui.unit.sp
 
 
 @Composable
-fun StreakBoxes(streakNumber: String, pointsNumber: String) {
+fun StreakBoxes(streakNumber: String?, pointsNumber: String?) {
+    val newPointsNumber = pointsNumber ?: "0"
+    val newStreakNumber = streakNumber ?: "0"
+
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceEvenly
@@ -62,7 +65,7 @@ fun StreakBoxes(streakNumber: String, pointsNumber: String) {
                 verticalArrangement = Arrangement.Bottom
             ) {
                 AnimatedContent(
-                    targetState = streakNumber,
+                    targetState = newStreakNumber,
                     transitionSpec = {
                         fadeIn(animationSpec = tween(1500)) togetherWith
                                 fadeOut(animationSpec = tween(150))
@@ -109,7 +112,7 @@ fun StreakBoxes(streakNumber: String, pointsNumber: String) {
                 verticalArrangement = Arrangement.Bottom
             ) {
                 AnimatedContent(
-                    targetState = pointsNumber,
+                    targetState = newPointsNumber,
                     transitionSpec = {
                         fadeIn(animationSpec = tween(1000)) togetherWith
                                 fadeOut(animationSpec = tween(150))
@@ -117,7 +120,7 @@ fun StreakBoxes(streakNumber: String, pointsNumber: String) {
                     label = "points_animation"
                 ) { animatedPointsNumber ->
                     Text(
-                        text = "27$animatedPointsNumber",
+                        text = "$animatedPointsNumber",
                         fontSize = 40.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color.White,

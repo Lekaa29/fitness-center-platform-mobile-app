@@ -2,7 +2,6 @@ package com.example.fitnesscentarchat.data.repository
 
 import com.example.fitnesscentarchat.data.api.ChatApiService
 import com.example.fitnesscentarchat.data.models.Conversation
-import com.example.fitnesscentarchat.data.models.Membership
 import com.example.fitnesscentarchat.data.models.User
 import com.example.fitnesscentarchat.data.repository.interfaces.IUserRepository
 import kotlinx.coroutines.Dispatchers
@@ -53,10 +52,11 @@ class UserRepository(
             }
 
             var user = User(
-                Id = currentUser.Id,
-                FirstName = currentUser.FirstName,
-                LastName = currentUser.LastName,
-                PictureLink = imageUrl
+                id = currentUser.id,
+                firstName = currentUser.firstName,
+                lastName = currentUser.lastName,
+                pictureLink = imageUrl,
+                username = currentUser.username
             )
 
 

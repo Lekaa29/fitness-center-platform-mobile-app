@@ -5,4 +5,5 @@ data class Program(
     val price: Float,
     val description: String,
     val weekDuration: Int,
-)
+    val idUser: Int,
+    )

@@ -4,7 +4,6 @@ import android.util.Log
 import com.example.fitnesscentarchat.data.api.ChatApiService
 import com.example.fitnesscentarchat.data.models.Attendance
 import com.example.fitnesscentarchat.data.models.Conversation
-import com.example.fitnesscentarchat.data.models.Membership
 import com.example.fitnesscentarchat.data.models.Message
 import com.example.fitnesscentarchat.data.repository.interfaces.IAttendanceRepository
 import com.example.fitnesscentarchat.data.repository.interfaces.IAuthRepository
@@ -44,9 +43,25 @@ class AttendanceRepository(
         }
     }
 
-    override suspend fun GetRecentAttendees(fitnessCenterId: Int): Result<List<Attendance>> {
+    override suspend fun GetRecentAttendees(fitnessCenterId: Int): Result<Int> {
         return try {
             Result.success(apiService.getRecentAttendees(fitnessCenterId))
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    override suspend fun GetAllAttendences(fitnessCenterId: Int): Result<List<Attendance>> {
+        return try {
+            Result.success(apiService.getAllAttendences(fitnessCenterId))
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    override suspend fun GetLeavingAttendees(fitnessCenterId: Int): Result<Int> {
+        return try {
+            Result.success(apiService.getLeavingAttendees(fitnessCenterId))
         } catch (e: Exception) {
             Result.failure(e)
         }
@@ -61,10 +76,10 @@ class AttendanceRepository(
 
 
             val attendance = Attendance(
-                IdAttendance = 0,
-                UserId = currentUser.Id,
-                FitnessCentarId = fitnessCenterId,
-                Timestamp = null
+                idAttendance = 0,
+                userId = currentUser.id,
+                fitnessCentarId = fitnessCenterId,
+                timestamp = null
             )
 
 

@@ -2,7 +2,6 @@ package com.example.fitnesscentarchat.data.repository.interfaces
 
 
 import com.example.fitnesscentarchat.data.models.Conversation
-import com.example.fitnesscentarchat.data.models.Membership
 import com.example.fitnesscentarchat.data.models.Message
 import com.example.fitnesscentarchat.data.models.ShopItem
 import kotlinx.coroutines.flow.Flow
