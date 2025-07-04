@@ -71,7 +71,6 @@ class ChatViewModel(
                             isLoading = false,
                             isSending = oldState.isSending,
                             error = oldState.error,
-                            chatPartner = oldState.chatPartner
                         )
 
                         Log.d("VIEWMODEL", "After force emit - uiState.messages.size = ${_uiState.value.messages.size}")

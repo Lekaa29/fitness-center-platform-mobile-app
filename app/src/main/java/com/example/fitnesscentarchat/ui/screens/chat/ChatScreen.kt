@@ -4,24 +4,50 @@ import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Send
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.example.fitnesscentarchat.data.models.Message
 import com.example.fitnesscentarchat.data.repository.AuthRepository
-import java.time.format.DateTimeFormatter
 import kotlinx.coroutines.launch
+import androidx.compose.animation.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Snackbar
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.*
+import com.example.fitnesscentarchat.data.models.User
+import com.example.fitnesscentarchat.ui.screens.chat.components.MessageChunkItem
+import com.example.fitnesscentarchat.ui.screens.chat.components.groupMessagesIntoChunks
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -29,6 +55,8 @@ fun ChatScreen(
     viewModel: ChatViewModel,
     authRepository: AuthRepository,
     conversationId: Int,
+    userId: Int?,
+    title: String,
     onNavigateBack: () -> Unit
 ) {
     Log.d("CHATSCREEN", "=== ChatScreen RECOMPOSITION ===")
@@ -41,15 +69,15 @@ fun ChatScreen(
 
     Log.d("CHATSCREEN", "Collected uiState: $uiState")
 
-    val listState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
+    val listState = rememberLazyListState()
     var messageText by remember { mutableStateOf("") }
-    var currentUser by remember { mutableStateOf<Int?>(null) }
+    var currentUser by remember { mutableStateOf(101) }
 
     // Add debugging to LaunchedEffect
     LaunchedEffect(conversationId) {
         Log.d("CHATSCREEN", "LaunchedEffect - calling loadChat($conversationId)")
-        currentUser = authRepository.getCurrentUser()?.id
+        currentUser = authRepository.getCurrentUser()?.id ?: 0
         viewModel.loadChat(conversationId)
     }
 
@@ -68,10 +96,16 @@ fun ChatScreen(
         }
     }
 
+
+
+    val messageChunks = remember(uiState.messages) {
+        groupMessagesIntoChunks(uiState.messages)
+    }
+
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(uiState.chatPartner?.firstName ?: "Chat") },
+                title = { Text(title ?: "Chat") },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
                         Icon(
@@ -79,7 +113,13 @@ fun ChatScreen(
                             contentDescription = "Back"
                         )
                     }
-                }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = Color(0xFF020C41),
+                    titleContentColor = Color.White,
+                    navigationIconContentColor = Color.White,
+                    actionIconContentColor = Color.White,
+                )
             )
         }
     ) { paddingValues ->
@@ -87,12 +127,15 @@ fun ChatScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
+                .background(brush = Brush.linearGradient(
+                    listOf(
+                        Color(0xFF020C41),
+                        Color(0xFF020105),
+                    )
+                ))
         ) {
-            Log.d("CHATSCREEN", "=== COMPOSE BODY === uiState: $uiState")
-
             when {
                 uiState.isLoading -> {
-                    Log.d("CHATSCREEN", "Showing loading indicator")
                     Box(modifier = Modifier.weight(1f)) {
                         CircularProgressIndicator(
                             modifier = Modifier.align(Alignment.Center)
@@ -100,7 +143,6 @@ fun ChatScreen(
                     }
                 }
                 uiState.messages.isEmpty() -> {
-                    Log.d("CHATSCREEN", "Showing empty state - messages: ${uiState.messages}")
                     Box(
                         modifier = Modifier
                             .weight(1f)
@@ -114,11 +156,6 @@ fun ChatScreen(
                     }
                 }
                 else -> {
-                    Log.d("CHATSCREEN", "Showing LazyColumn with ${uiState.messages.size} messages")
-                    uiState.messages.forEachIndexed { index, message ->
-                        Log.d("CHATSCREEN", "Message $index: ${message.text} (senderId=${message.senderId})")
-                    }
-
                     LazyColumn(
                         modifier = Modifier
                             .weight(1f)
@@ -126,13 +163,16 @@ fun ChatScreen(
                             .padding(horizontal = 16.dp),
                         state = listState,
                         contentPadding = PaddingValues(vertical = 8.dp),
-                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                        verticalArrangement = Arrangement.spacedBy(4.dp)
                     ) {
-                        items(uiState.messages) { message ->
-                            Log.d("CHATSCREEN", "Rendering message: ${message.text}")
-                            MessageItem(
-                                message = message,
-                                isFromCurrentUser = message.senderId == currentUser
+                        items(messageChunks) { chunk ->
+                            val user = uiState.participants?.find { it.id == chunk.senderId }
+                                ?: User(chunk.senderId, "", "", "Unknown", "", "", "")
+
+                            MessageChunkItem(
+                                chunk = chunk,
+                                isFromCurrentUser = chunk.senderId == currentUser,
+                                user = user
                             )
                         }
                     }
@@ -151,7 +191,13 @@ fun ChatScreen(
                     onValueChange = { messageText = it },
                     placeholder = { Text("Type a message") },
                     modifier = Modifier.weight(1f),
-                    maxLines = 3
+                    maxLines = 3,
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedTextColor = Color.White,
+                        unfocusedTextColor = Color.White,
+                        focusedPlaceholderColor = Color.White.copy(alpha = 0.6f),
+                        unfocusedPlaceholderColor = Color.White.copy(alpha = 0.6f)
+                    )
                 )
 
                 Spacer(modifier = Modifier.width(8.dp))
@@ -159,8 +205,7 @@ fun ChatScreen(
                 Button(
                     onClick = {
                         if (messageText.isNotBlank()) {
-                            Log.d("CHATSCREEN", "Sending message: $messageText")
-                            viewModel.sendMessage(conversationId, messageText)
+                            // Handle sending message
                             messageText = ""
                         }
                     },
@@ -175,7 +220,9 @@ fun ChatScreen(
                     } else {
                         Icon(
                             imageVector = Icons.Default.Send,
-                            contentDescription = "Send"
+                            contentDescription = "Send",
+                            tint = Color.White
+
                         )
                     }
                 }
@@ -191,48 +238,5 @@ fun ChatScreen(
                 }
             }
         }
-    }
-}
-@Composable
-fun MessageItem(message: Message, isFromCurrentUser: Boolean) {
-    val timeFormatter = DateTimeFormatter.ofPattern("HH:mm")
-
-    Column(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalAlignment = if (isFromCurrentUser) Alignment.End else Alignment.Start
-    ) {
-        Box(
-            modifier = Modifier
-                .widthIn(max = 300.dp)
-                .clip(
-                    RoundedCornerShape(
-                        topStart = 16.dp,
-                        topEnd = 16.dp,
-                        bottomStart = if (isFromCurrentUser) 16.dp else 4.dp,
-                        bottomEnd = if (isFromCurrentUser) 4.dp else 16.dp
-                    )
-                )
-                .background(
-                    if (isFromCurrentUser) MaterialTheme.colorScheme.primary
-                    else MaterialTheme.colorScheme.surfaceVariant
-                )
-                .padding(12.dp)
-        ) {
-            Text(
-                text = message.text,
-                color = if (isFromCurrentUser) MaterialTheme.colorScheme.onPrimary
-                else MaterialTheme.colorScheme.onSurfaceVariant
-            )
-        }
-
-        Spacer(modifier = Modifier.height(4.dp))
-
-        Text(
-            text = message.timestamp?.format(timeFormatter) ?: "Unknown time",
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            textAlign = if (isFromCurrentUser) TextAlign.End else TextAlign.Start,
-            modifier = Modifier.padding(horizontal = 4.dp)
-        )
     }
 }

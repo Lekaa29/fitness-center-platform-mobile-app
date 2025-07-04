@@ -8,6 +8,7 @@ import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -36,7 +37,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import com.example.fitnesscentarchat.R
 import com.example.fitnesscentarchat.data.models.User
-import com.example.fitnesscentarchat.ui.screens.hub.components.ProfileButton
+import com.example.fitnesscentarchat.ui.screens.hub.components.ProfileButtonWithDropdown
 
 
 @Composable
@@ -62,7 +63,7 @@ fun transparentButton(text: String, onClick: () -> Unit){
 }
 
 @Composable
-fun TopActionsContainer(soonLeaving: Int?) {
+fun TopActionsContainer(soonLeaving: Int?, onViewQrClick: () -> Unit) {
     val newSoonLeaving = soonLeaving ?: 0
 
     Box (
@@ -94,14 +95,16 @@ fun TopActionsContainer(soonLeaving: Int?) {
                 modifier = Modifier.fillMaxHeight(),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.SpaceBetween,
-
-                ) {
-                Row(
-                ){
+            ) {
+                Row {
                     Image(
                         painter = painterResource(id = R.drawable.icons8_qr_100),
                         contentDescription = "Star Icon",
-                        modifier = Modifier.size(84.dp)
+                        modifier = Modifier
+                            .size(84.dp)
+                            .clickable {
+                                onViewQrClick()
+                            }
                     )
                 }
                 Text(text = "scan QR", fontSize = 12.sp, color = Color(0xF2BDBDBD))
@@ -150,8 +153,13 @@ fun TopBarContent(currentUser: User?
         verticalAlignment = Alignment.CenterVertically
     ) {
 
-
-        ProfileButton(currentUser, 40.dp)
+        ProfileButtonWithDropdown(
+            currentUser = currentUser,
+            size = 40.dp,
+            onMessagesClick = { /* Handle messages */ },
+            onItemsClick = { /* Handle items */ },
+            onLogoutClick = { /* Handle logout */ }
+        )
     }
 }
 

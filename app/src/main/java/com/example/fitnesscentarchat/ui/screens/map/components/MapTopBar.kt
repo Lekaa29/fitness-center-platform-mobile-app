@@ -21,7 +21,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import com.example.fitnesscentarchat.data.models.User
-import com.example.fitnesscentarchat.ui.screens.hub.components.ProfileButton
+import com.example.fitnesscentarchat.ui.screens.hub.components.ProfileButtonWithDropdown
 
 @Composable
 fun TopBarMapButton(onMapClick: () -> Unit) {
@@ -87,7 +87,13 @@ fun MapTopBar(onBackClick: () -> Unit, modifier:Modifier, currentUser: User?) {
             Spacer(modifier = Modifier.size(1.dp))
             MapButton(onBackClick = onBackClick)
             Spacer(modifier = Modifier.size(1.dp))
-            ProfileButton(currentUser, 36.dp)
+            ProfileButtonWithDropdown(
+                currentUser = currentUser,
+                size = 36.dp,
+                onMessagesClick = { /* Handle messages */ },
+                onItemsClick = { /* Handle items */ },
+                onLogoutClick = { /* Handle logout */ }
+            )
         }
     }
 }

@@ -6,14 +6,12 @@ import com.example.fitnesscentarchat.data.models.User
 data class ChatUiState(
     val isLoading: Boolean = false,
     val isSending: Boolean = false,
-    val chatPartner: User? = null,
+    val participants: List<User>? = emptyList(),
     val messages: List<Message> = emptyList(),
     val error: String? = null
-
-
 ){
     // Add explicit toString for debugging
     override fun toString(): String {
-        return "ChatUiState(messages.size=${messages.size}, isLoading=$isLoading, isSending=$isSending, error=$error, chatPartner=${chatPartner?.firstName})"
+        return "ChatUiState(messages.size=${messages.size}, isLoading=$isLoading, isSending=$isSending, error=$error)"
     }
 }

@@ -20,11 +20,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.fitnesscentarchat.data.models.MembershipModel
 import com.example.fitnesscentarchat.data.models.User
+import com.example.fitnesscentarchat.ui.screens.hub.components.getExpiryStatus
 
 @Composable
 fun TopTextSection(user: User?, membership: MembershipModel?, onTopTextPositioned: (Float) -> Unit) {
     val newUsername = user?.username ?: "-"
-    val expires = membership?.membershipDeadline ?: "-.-.----"
+    val expires = getExpiryStatus(membership?.membershipDeadline) ?: "-.-.----"
+
+
     Column(
         modifier = Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -48,7 +51,7 @@ fun TopTextSection(user: User?, membership: MembershipModel?, onTopTextPositione
                 }
                 Spacer(modifier = Modifier.size(8.dp))
                 Text("$newUsername", color= Color(0xFFFFFFFF),modifier= Modifier.padding(8.dp), fontSize=20.sp)
-                Text("Expires: ${expires}", color= Color(0xFFFFFFFF),modifier= Modifier.padding(8.dp), fontSize=16.sp)
+                Text("${expires}", color= Color(0xFFFFFFFF),modifier= Modifier.padding(8.dp), fontSize=16.sp)
             }
         }
 

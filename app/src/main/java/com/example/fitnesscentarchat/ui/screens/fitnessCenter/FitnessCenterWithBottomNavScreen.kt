@@ -10,6 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.fitnesscentarchat.data.repository.AttendanceRepository
 import com.example.fitnesscentarchat.data.repository.AuthRepository
+import com.example.fitnesscentarchat.data.repository.CacheRepository
 import com.example.fitnesscentarchat.data.repository.FitnessCenterRepository
 import com.example.fitnesscentarchat.data.repository.MembershipRepository
 import com.example.fitnesscentarchat.data.repository.ShopRepository
@@ -29,10 +30,12 @@ fun FitnessCenterWithBottomNav(
     fitnessCenterRepository: FitnessCenterRepository,
     membershipRepository: MembershipRepository,
     attendanceRepository: AttendanceRepository,
+    cacheRepository: CacheRepository,
     userRepository: UserRepository,
     shopRepository: ShopRepository,
     authRepository: AuthRepository,
-    onNavigateBack: () -> Unit
+    onNavigateBack: () -> Unit,
+    onChatClicked: (Int, Int, String) -> Unit,
 ) {
     var currentTab by remember { mutableStateOf("overview") }
     val coroutineScope = rememberCoroutineScope()
@@ -42,12 +45,13 @@ fun FitnessCenterWithBottomNav(
             fitnessCenterRepository = fitnessCenterRepository,
             membershipRepository = membershipRepository,
             attendanceRepository = attendanceRepository,
-            userRepository = userRepository
+            userRepository = userRepository,
+            cacheRepository = cacheRepository
         )
     }
 
     val shopViewModel = remember {
-        ShopViewModel(shopRepository = shopRepository)
+        ShopViewModel(shopRepository = shopRepository, membershipRepository = membershipRepository)
     }
 
     val membershipViewModel = remember {
@@ -114,7 +118,8 @@ fun FitnessCenterWithBottomNav(
                     viewModel = overviewViewModel,
                     fitnessCenterId = fitnessCenterId,
                     authRepository = authRepository,
-                    onNavigateBack = onNavigateBack
+                    onNavigateBack = onNavigateBack,
+                    onChatClicked=onChatClicked
                 )
             }
 
@@ -147,6 +152,7 @@ fun FitnessCenterWithBottomNav(
         }
     }
 }
+/*
 
 // ALTERNATIVE APPROACH: Pre-compose all screens but show only one
 @Composable
@@ -174,7 +180,7 @@ fun FitnessCenterWithPrecomposedScreens(
     // ... other viewModels
 
     val shopViewModel = remember {
-        ShopViewModel(shopRepository = shopRepository)
+        ShopViewModel(shopRepository = shopRepository, membershipRepository=membershipRepository)
     }
 
     val membershipViewModel = remember {
@@ -255,3 +261,4 @@ fun FitnessCenterWithPrecomposedScreens(
     }
 }
 
+*/

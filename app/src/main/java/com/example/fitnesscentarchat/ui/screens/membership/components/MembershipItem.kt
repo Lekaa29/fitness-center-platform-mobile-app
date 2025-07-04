@@ -38,7 +38,7 @@ fun MembershipItem(
     onClick: () -> Unit // Changed to simple callback
 ) {
     val title = membershipPackage.title ?: "title"
-    val price = membershipPackage.price.toString()
+    val price = String.format("%.2f", membershipPackage.price)
     val discount = membershipPackage.discount
     Log.d("item", "$membershipPackage")
 
@@ -55,7 +55,7 @@ fun MembershipItem(
                 )
             }
             .background(
-                color = Color(0x36CECECE),
+                color = Color(0x40504F4F),
                 shape = RoundedCornerShape(12.dp)
             )
             .padding(12.dp),
@@ -94,14 +94,14 @@ fun MembershipItem(
         ) {
             Box(
                 modifier = Modifier
-                    .background(Color(0xFF1B1B1B), shape = RoundedCornerShape(12.dp))
+                    .background(Color(0x001B1B1B), shape = RoundedCornerShape(12.dp))
                     .padding(horizontal = 12.dp, vertical = 6.dp)
             ) {
                 Text(
-                    text = "${price} E",
+                    text = "${price} Eur",
                     fontSize = 16.sp,
                     color = Color.White,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.Normal
                 )
             }
         }

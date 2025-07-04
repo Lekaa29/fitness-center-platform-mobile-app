@@ -31,6 +31,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -51,13 +52,27 @@ import coil.compose.AsyncImage
 import com.example.fitnesscentarchat.data.models.Article
 import com.example.fitnesscentarchat.data.models.Coach
 import com.example.fitnesscentarchat.data.models.Program
+import com.example.fitnesscentarchat.ui.screens.fitnessCenter.FitnessCenterViewModel
 
 
 @Composable
 fun SingleCoachView(
     programs: List<Program>,
-    onBackClick: () -> Unit
+    onChatClicked: (Int, Int, String) -> Unit,
+    onBackClick: () -> Unit,
+    viewModel: FitnessCenterViewModel,
+    coachUserId: Int,
+    coachName: String
 ) {
+
+    var conversationId by remember { mutableStateOf<Int?>(null) }
+
+    LaunchedEffect(coachUserId) { // will reload if coach changes
+        conversationId = viewModel.getConversationIdByRecipient(coachUserId)
+    }
+
+
+
     Column(
         modifier = Modifier
             .fillMaxSize(),
@@ -83,9 +98,7 @@ fun SingleCoachView(
                 )
             }
         }
-        transparentButton(text = "Contact") {
-
-        }
+        transparentButton(text = "Contact", onClick = { onChatClicked(1,coachUserId, coachName) })
         // Scrollable content
         LazyColumn(
             modifier = Modifier
@@ -97,7 +110,7 @@ fun SingleCoachView(
             items(programs) { program ->
                 ProgramItemRow(
                     name = program.title ?: "",
-                    price = program.price.toString() ?: "0.0",
+                    price = String.format("%.2f", program.price),
                     durationWeeks = program.weekDuration.toString() ?: "0",
                     description = program.description ?: "no description",
                     onClick = { }
@@ -246,13 +259,6 @@ fun CoachesItemRow(
                             maxLines = 3,
                             overflow = TextOverflow.Ellipsis
                         )
-                        Text(
-                            text = "$price E/hr",
-                            color = Color.White,
-                            fontSize = 16.sp,
-                            maxLines = 3,
-                            overflow = TextOverflow.Ellipsis
-                        )
                     }
                 }
                 Text(
@@ -280,6 +286,7 @@ fun ProgramItemRow(
     description: String,
     onClick: () -> Unit
 ) {
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -293,12 +300,14 @@ fun ProgramItemRow(
         Row(
             modifier = Modifier
                 .fillMaxSize()
-                .background(brush = Brush.linearGradient(
-                    listOf(
-                        Color(0xFF000000),
-                        Color(0xFF2E2E2E),
+                .background(
+                    brush = Brush.linearGradient(
+                        listOf(
+                            Color(0xFF1D1D1D),
+                            Color(0xFF252525),
+                        )
                     )
-                )),
+                ),
             horizontalArrangement = Arrangement.spacedBy(18.dp)
         ) {
             Column(
@@ -322,7 +331,7 @@ fun ProgramItemRow(
                                 fontWeight = FontWeight.ExtraBold,
                                 textAlign = TextAlign.Center,
                                 modifier= Modifier
-                                    .padding(top=36.dp)
+                                    .padding(top = 36.dp)
                                     .fillMaxWidth()
                                     .height(72.dp)
 
@@ -360,7 +369,7 @@ fun ProgramItemRow(
                                 overflow = TextOverflow.Ellipsis
                             )
                             Text(
-                                text = "E/hr",
+                                text = "Eur/hr",
                                 color = Color.White,
                                 fontWeight = FontWeight.Light,
                                 fontSize = 18.sp,
@@ -411,7 +420,9 @@ fun ProgramItemRow(
 @Composable
 fun CoachesOverlay(
     coaches: List<Coach>,
-    onBackClick: () -> Unit
+    onChatClicked: (Int, Int, String) -> Unit,
+    onBackClick: () -> Unit,
+    viewModel: FitnessCenterViewModel
 ) {
     var selectedArticle by remember { mutableStateOf<Coach?>(null) }
 
@@ -465,8 +476,12 @@ fun CoachesOverlay(
                 ) {
                     SingleCoachView(
                         programs = selectedArticle!!.programs,
-                        onBackClick = { selectedArticle = null }
-                    )
+                        onBackClick = { selectedArticle = null },
+                        onChatClicked = onChatClicked,
+                        coachUserId = selectedArticle?.user?.id ?: -1,
+                        coachName = "${selectedArticle?.user?.firstName} ${selectedArticle?.user?.lastName}",
+                        viewModel = viewModel
+                        )
                 }
 
             } else {

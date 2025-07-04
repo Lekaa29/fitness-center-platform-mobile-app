@@ -69,6 +69,15 @@ class FitnessCenterRepository(
         }
     }
 
+    override suspend fun GetConversationIdByRecepient(userId: Int) : Result<Int> {
+        return try{
+            Result.success(apiService.getConversationIdByRecepient(userId))
+
+        } catch(e: Exception){
+            Result.failure(e)
+        }
+    }
+
 
 
     override suspend fun GetPromoFitnessCenters() : Result<List<FitnessCenter>> {

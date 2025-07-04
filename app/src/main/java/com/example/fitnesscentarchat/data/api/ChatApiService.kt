@@ -107,6 +107,9 @@ interface ChatApiService {
     suspend fun getMessagesByConversation(@Path("conversationId") conversationId: Int): List<Message>
 
 
+    @GET("Conversation/id/{userId}")
+    suspend fun getConversationIdByRecepient(@Path("userId") userId: Int): Int
+
     @POST("Conversation/message/send/{recipientId}")
     suspend fun sendMessage(
         @Path("recipientId") recipientId: Int,

@@ -1,6 +1,7 @@
 package com.example.fitnesscentarchat.ui.screens.fitnessCenter
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -18,7 +19,8 @@ fun FitnessCenterScreen(
     fitnessCenterId: Int,
     authRepository: AuthRepository,
     viewModel: FitnessCenterViewModel,
-    onNavigateBack: () -> Unit
+    onNavigateBack: () -> Unit,
+    onChatClicked: (Int, Int, String) -> Unit,
 ) {
 
     val uiState by remember {
@@ -37,7 +39,11 @@ fun FitnessCenterScreen(
     var showLeaderboardOverlay by remember { mutableStateOf(false) }
     var showCoachesOverlay by remember { mutableStateOf(false) }
     var showGraphOverlay by remember { mutableStateOf(false) }
+    var viewQROverlay by remember { mutableStateOf(false) }
 
+
+
+    val scrollState = rememberScrollState()
 
 
     Scaffold(
@@ -51,7 +57,9 @@ fun FitnessCenterScreen(
             Box(){
                 FitnessCenterContent(
                     currentUser,
+                    onChatClicked = onChatClicked,
                     uiState=uiState,
+                    scrollState = scrollState,
                     onTopTextPositioned = { topTextOffsetY = it },
                     onShowNewsOverlayChange = { showNewsOverlay = it},
                     showNewsOverlay,
@@ -60,7 +68,10 @@ fun FitnessCenterScreen(
                     onCoachesOverlayChange = { showCoachesOverlay = it},
                     showCoachesOverlay,
                     showGraphOverlay = showGraphOverlay,
-                    onshowGraphOverlayChange = { showGraphOverlay = it}
+                    onshowGraphOverlayChange = { showGraphOverlay = it},
+                    onViewQRChange = { viewQROverlay = it},
+                    viewQROverlay = viewQROverlay,
+                    viewModel = viewModel
                 )
             }
 

@@ -14,5 +14,6 @@ interface IFitnessCenterRepository {
     suspend fun GetFitnessCentarsCoaches(fitnessCenterId: Int) : Result<List<Coach>>
     suspend fun GetFitnessCenterArticles(fitnessCenterId: Int) : Result<List<Article>>
     suspend fun GetPromoFitnessCenters() : Result<List<FitnessCenter>>
+    suspend fun GetConversationIdByRecepient(userId: Int) : Result<Int>
     suspend fun GetClosestFitnessCentars(userLat:Double, userLng:Double) : Result<List<FitnessCenter>>
 }

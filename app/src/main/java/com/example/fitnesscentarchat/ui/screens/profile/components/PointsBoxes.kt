@@ -57,7 +57,7 @@ fun StreakBoxes(streakNumber: String?, pointsNumber: String?) {
                     .height(120.dp)
                     .width(140.dp)
                     .background(
-                        Color(0xFF0F0F0F),
+                        Color(0xFF000000),
                         shape = RoundedCornerShape(16.dp)
                     )
                     .padding(16.dp),
@@ -104,7 +104,7 @@ fun StreakBoxes(streakNumber: String?, pointsNumber: String?) {
                     .height(120.dp)
                     .width(140.dp)
                     .background(
-                        Color(0xFF0F0F0F),
+                        Color(0xFF000000),
                         shape = RoundedCornerShape(16.dp)
                     )
                     .padding(16.dp),

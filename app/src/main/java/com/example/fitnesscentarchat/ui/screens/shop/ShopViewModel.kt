@@ -11,7 +11,8 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class ShopViewModel(
-    private val shopRepository: ShopRepository
+    private val shopRepository: ShopRepository,
+    private val membershipRepository: MembershipRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(ShopUiState())
@@ -26,6 +27,20 @@ class ShopViewModel(
             shopRepository.GetFitnessCenterItems(fitnessCenterId).fold(
                 onSuccess = { shopItems ->
                     _uiState.update { it.copy(shopItems = shopItems, isLoading = false) }
+                },
+                onFailure = { error ->
+                    _uiState.update {
+                        it.copy(
+                            error = error.message ?: "Failed to load items",
+                            isLoading = false
+                        )
+                    }
+                }
+            )
+
+            membershipRepository.GetUserMembershipByFitnessCenter(fitnessCenterId).fold(
+                onSuccess = { membership ->
+                    _uiState.update { it.copy(membership = membership, isLoading = false) }
                 },
                 onFailure = { error ->
                     _uiState.update {

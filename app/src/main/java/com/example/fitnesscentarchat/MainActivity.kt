@@ -18,6 +18,7 @@ import androidx.navigation.navArgument
 import com.example.fitnesscentarchat.data.api.RetrofitBuilder
 import com.example.fitnesscentarchat.data.repository.AttendanceRepository
 import com.example.fitnesscentarchat.data.repository.AuthRepository
+import com.example.fitnesscentarchat.data.repository.CacheRepository
 import com.example.fitnesscentarchat.data.repository.FitnessCenterRepository
 import com.example.fitnesscentarchat.data.repository.MembershipRepository
 import com.example.fitnesscentarchat.data.repository.MessageRepository
@@ -35,6 +36,7 @@ import com.example.fitnesscentarchat.ui.screens.login.LoginScreen
 import com.example.fitnesscentarchat.ui.screens.login.LoginViewModel
 import com.example.fitnesscentarchat.ui.screens.users.UsersScreen
 import com.example.fitnesscentarchat.ui.screens.users.UsersViewModel
+import com.google.gson.Gson
 
 
 class MainActivity : ComponentActivity() {
@@ -46,6 +48,7 @@ class MainActivity : ComponentActivity() {
     private lateinit var fitnessCenterRepository: FitnessCenterRepository
     private lateinit var membershipRepository: MembershipRepository
     private lateinit var shopRepository: ShopRepository
+    private lateinit var cacheRepository: CacheRepository
 
     @SuppressLint("ViewModelConstructorInComposable")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -64,6 +67,7 @@ class MainActivity : ComponentActivity() {
         fitnessCenterRepository = FitnessCenterRepository(apiService)
         membershipRepository = MembershipRepository(apiService, authRepository)
         shopRepository = ShopRepository(apiService, authRepository)
+        cacheRepository = CacheRepository(applicationContext, Gson())
 
         setContent {
             AppTheme {
@@ -90,7 +94,7 @@ class MainActivity : ComponentActivity() {
                         }
 
                         composable("hub") {
-                            val viewModel = HubViewModel(fitnessCenterRepository, membershipRepository)
+                            val viewModel = HubViewModel(fitnessCenterRepository, membershipRepository, cacheRepository, authRepository)
                             HubScreen(
                                 viewModel = viewModel,
                                 onFitnessCenterSelected = { fitnessCenterId ->
@@ -112,23 +116,32 @@ class MainActivity : ComponentActivity() {
                         }
 
                         composable(
-                            route = "conversation/{conversationId}",
+                            route = "conversation/{conversationId}/{userId}/{chatName}",
                             arguments = listOf(
-                                navArgument("conversationId") { type = NavType.IntType }
+                                navArgument("conversationId") { type = NavType.IntType },
+                                navArgument("userId") { type = NavType.IntType },
+                                navArgument("chatName") { type = NavType.StringType }
                             )
                         ) { backStackEntry ->
+
                             val conversationId = backStackEntry.arguments?.getInt("conversationId") ?: return@composable
+                            val userId = backStackEntry.arguments?.getInt("userId") ?: return@composable
+                            val chatName = backStackEntry.arguments?.getString("chatName") ?: return@composable
+
                             val viewModel = ChatViewModel(messageRepository, userRepository)
 
                             ChatScreen(
                                 viewModel = viewModel,
                                 authRepository = authRepository,
                                 conversationId = conversationId,
+                                userId = userId,
+                                title = chatName,
                                 onNavigateBack = {
                                     navController.popBackStack()
                                 }
                             )
                         }
+
 
 
                         composable(
@@ -138,7 +151,7 @@ class MainActivity : ComponentActivity() {
                             )
                         ) { backStackEntry ->
                             val fitnessCenterId = backStackEntry.arguments?.getInt("fitnessCenterId") ?: return@composable
-                            val viewModel = FitnessCenterViewModel(fitnessCenterRepository, membershipRepository, attendanceRepository, userRepository)
+                            val viewModel = FitnessCenterViewModel(fitnessCenterRepository, membershipRepository, attendanceRepository, userRepository, cacheRepository)
 
                             FitnessCenterScreen(
                                 viewModel = viewModel,
@@ -146,7 +159,9 @@ class MainActivity : ComponentActivity() {
                                 authRepository = authRepository,
                                 onNavigateBack = {
                                     navController.popBackStack()
-                                }
+                                },
+                                onChatClicked = {  conversationId, userId, chatName ->
+                                    navController.navigate("conversation/$conversationId/$userId/$chatName") }
                             )
                         }
 
@@ -167,9 +182,12 @@ class MainActivity : ComponentActivity() {
                                 userRepository = userRepository,
                                 authRepository = authRepository,
                                 shopRepository = shopRepository,
+                                cacheRepository = cacheRepository,
                                 onNavigateBack = {
                                     navController.popBackStack()
-                                }
+                                },
+                                onChatClicked = {  conversationId, userId, chatName ->
+                                    navController.navigate("conversation/$conversationId/$userId/$chatName") }
                             )
                         }
 

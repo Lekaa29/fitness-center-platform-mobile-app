@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -29,12 +30,16 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.fitnesscentarchat.data.models.User
 import com.example.fitnesscentarchat.ui.screens.fitnessCenter.FitnessCenterUiState
+import com.example.fitnesscentarchat.ui.screens.fitnessCenter.FitnessCenterViewModel
+import com.example.fitnesscentarchat.ui.screens.shop.components.BuyItemOverlay
 
 
 @Composable
 fun FitnessCenterContent(
     currentUser: User?,
+    onChatClicked: (Int, Int, String) -> Unit,
     uiState: FitnessCenterUiState,
+    scrollState: androidx.compose.foundation.ScrollState,
     onTopTextPositioned: (Float) -> Unit,
     onShowNewsOverlayChange: (Boolean) -> Unit,
     showNewsOverlay:Boolean,
@@ -43,7 +48,10 @@ fun FitnessCenterContent(
     onCoachesOverlayChange: (Boolean) -> Unit,
     showCoachesOverlay:Boolean,
     onshowGraphOverlayChange: (Boolean) -> Unit,
-    showGraphOverlay: Boolean
+    showGraphOverlay: Boolean,
+    onViewQRChange: (Boolean) -> Unit,
+    viewQROverlay: Boolean,
+    viewModel: FitnessCenterViewModel
 ) {
     val animatedColor = rememberAnimatedGradientColor()
 
@@ -57,6 +65,7 @@ fun FitnessCenterContent(
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .verticalScroll(scrollState)
                 .background(
                     brush = Brush.verticalGradient(
                         listOf(
@@ -78,7 +87,7 @@ fun FitnessCenterContent(
             )
             Spacer(modifier = Modifier.padding(20.dp))
             TopTextSection(onTopTextPositioned = onTopTextPositioned, onViewGraphClick = { onshowGraphOverlayChange(true) }, uiState.recentAttendance)
-            TopActionsContainer(uiState.soonLeaving)
+            TopActionsContainer(uiState.soonLeaving, onViewQrClick = { onViewQRChange(true) })
             Spacer(modifier = Modifier.padding(12.dp))
             Line(Color.White)
             Spacer(modifier = Modifier.padding(4.dp))
@@ -127,6 +136,29 @@ fun FitnessCenterContent(
         }
 
         AnimatedVisibility(
+            visible = viewQROverlay,
+            enter = fadeIn(
+                animationSpec = tween(
+                    durationMillis = 300,
+                    easing = FastOutSlowInEasing
+                )
+            ),
+            exit = fadeOut(
+                animationSpec = tween(
+                    durationMillis = 250,
+                    easing = FastOutSlowInEasing
+                )
+            )
+        ) {
+            viewQROverlay(
+                qr = "",
+                onBackClick = {
+                    onViewQRChange(false)
+                }
+            )
+        }
+
+        AnimatedVisibility(
             visible = showLeaderboardOverlay,
             enter = fadeIn(
                 animationSpec = tween(
@@ -166,7 +198,9 @@ fun FitnessCenterContent(
         ) {
             CoachesOverlay(
                 coaches = uiState.coaches,
-                onBackClick = { onCoachesOverlayChange(false) }
+                onBackClick = { onCoachesOverlayChange(false) },
+                onChatClicked = onChatClicked,
+                viewModel = viewModel
             )
         }
 

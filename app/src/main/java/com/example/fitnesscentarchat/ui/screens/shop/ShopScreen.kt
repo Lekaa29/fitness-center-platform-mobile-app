@@ -4,6 +4,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.*
@@ -16,6 +17,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.fitnesscentarchat.data.models.Conversation
 import com.example.fitnesscentarchat.data.models.ShopItem
 import com.example.fitnesscentarchat.data.repository.AuthRepository
+import com.example.fitnesscentarchat.ui.screens.membership.components.MembershipContent
+import com.example.fitnesscentarchat.ui.screens.shop.components.ShopContent
 import com.example.fitnesscentarchat.ui.screens.users.UsersViewModel
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
@@ -36,6 +39,10 @@ fun ShopScreen(
 
     var currentUser by remember { mutableStateOf<Int?>(null) }
 
+
+    val scrollState = rememberScrollState()
+
+    var buyItemOverlay by remember { mutableStateOf(false) }
 
 
 
@@ -65,22 +72,17 @@ fun ShopScreen(
                 CircularProgressIndicator(
                     modifier = Modifier.align(Alignment.Center)
                 )
-            } else if (uiState.shopItems.isEmpty()) {
-                Text(
-                    text = "No users found",
-                    modifier = Modifier.align(Alignment.Center)
-                )
             } else {
-                LazyColumn(
-                    modifier = Modifier.fillMaxSize()
-                ) {
-                    items(uiState.shopItems) {
-                            shopItem ->
-                        ConversationItem(shopItem = shopItem,
-                            onClick = { //TODO POP UP
-                             } )
-
+                Box(modifier = Modifier.fillMaxSize()) {
+                    Box(){
+                        ShopContent(
+                            scrollState = scrollState,
+                            onBuyItemChange = { buyItemOverlay = it},
+                            buyItemOverlay = buyItemOverlay,
+                            uiState=uiState
+                        )
                     }
+
                 }
             }
 
@@ -97,43 +99,3 @@ fun ShopScreen(
     }
 }
 
-@Composable
-fun ConversationItem(shopItem: ShopItem, onClick: () -> Unit) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 8.dp)
-            .clickable(onClick = onClick)
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Icon(
-                imageVector = Icons.Default.Person,
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.primary,
-                modifier = Modifier.size(40.dp)
-            )
-
-            Spacer(modifier = Modifier.width(16.dp))
-
-            Column {
-                Text(
-                    text = shopItem.Name ?: "title",
-                    style = MaterialTheme.typography.titleMedium
-                )
-
-                Text(
-                    text = "CHAT",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
-            }
-        }
-    }
-}

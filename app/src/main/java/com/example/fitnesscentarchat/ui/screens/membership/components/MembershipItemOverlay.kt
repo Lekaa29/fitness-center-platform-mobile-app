@@ -113,10 +113,10 @@ fun MembershipItemOverlay(membershipPackage: MembershipPackage?, onBackClick: (B
                         containerColor = Color(0xFFFFFFFF)
                     ),
                     shape = RoundedCornerShape(8.dp),
-                    modifier = Modifier.height(48.dp).width(130.dp)
+                    modifier = Modifier.height(48.dp).width(160.dp)
                 ) {
                     Text(
-                        text = "Pay ${price*quantity}E",
+                        text = "Pay ${"%.2f".format(price * quantity)} Eur",
                         color = Color.Black,
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Medium

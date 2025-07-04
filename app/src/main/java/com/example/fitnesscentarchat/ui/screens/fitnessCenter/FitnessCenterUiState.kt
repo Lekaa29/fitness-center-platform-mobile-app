@@ -16,7 +16,9 @@ data class FitnessCenterUiState(
     val error: String? = null,
     val news: List<Article> = emptyList(),
     val coaches: List<Coach> = emptyList(),
-    val leaderboard: List<MembershipModel> = emptyList()
+    val leaderboard: List<MembershipModel> = emptyList(),
+    val isFromCache: Boolean = false
+
 )
 
 
