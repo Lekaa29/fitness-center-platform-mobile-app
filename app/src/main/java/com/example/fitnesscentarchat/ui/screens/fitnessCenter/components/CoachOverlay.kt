@@ -1,5 +1,6 @@
 package com.example.fitnesscentarchat.ui.screens.fitnessCenter.components
 
+import android.annotation.SuppressLint
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.tween
@@ -29,6 +30,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -46,6 +48,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
@@ -98,7 +101,7 @@ fun SingleCoachView(
                 )
             }
         }
-        transparentButton(text = "Contact", onClick = { onChatClicked(1,coachUserId, coachName) })
+        transparentButton(text = "Contact", onClick = { onChatClicked(conversationId ?: -1,coachUserId, coachName) })
         // Scrollable content
         LazyColumn(
             modifier = Modifier
@@ -209,7 +212,7 @@ fun CoachesItemRow(
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .height(256.dp)
+            .height(284.dp)
             .clickable { onClick() },
         colors = CardDefaults.cardColors(
             containerColor = Color(0xFF010101)
@@ -267,7 +270,7 @@ fun CoachesItemRow(
                     lineHeight = 14.sp,
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Light,
-                    maxLines = 3,
+                    maxLines = 7,
                     modifier = Modifier.padding(top=30.dp),
                     overflow = TextOverflow.Visible
                 )
@@ -331,14 +334,14 @@ fun ProgramItemRow(
                                 fontWeight = FontWeight.ExtraBold,
                                 textAlign = TextAlign.Center,
                                 modifier= Modifier
-                                    .padding(top = 36.dp)
+                                    .padding(top = 20.dp)
                                     .fillMaxWidth()
-                                    .height(72.dp)
+                                    .height(56.dp)
 
                             )
                         }
                         Row(
-                            modifier = Modifier.padding(top=16.dp)
+                            modifier = Modifier.padding(top=4.dp)
                         ){
                             Text(
                                 text = "Duration:     $durationWeeks",
@@ -391,14 +394,15 @@ fun ProgramItemRow(
                                 overflow = TextOverflow.Ellipsis
                             )
                             Text(
-                                text = "$description",
+                                text = description,
                                 color = Color.White,
                                 lineHeight = 14.sp,
                                 fontSize = 16.sp,
-                                maxLines = 3,
-                                modifier = Modifier.padding(top=8.dp, start = 8.dp),
+                                maxLines = 6, // Increase from 3 to 6 or higher
+                                modifier = Modifier.padding(top = 8.dp, start = 8.dp),
                                 overflow = TextOverflow.Ellipsis
                             )
+
                         }
 
                     }
@@ -408,9 +412,6 @@ fun ProgramItemRow(
         }
     }
 }
-
-
-
 
 
 

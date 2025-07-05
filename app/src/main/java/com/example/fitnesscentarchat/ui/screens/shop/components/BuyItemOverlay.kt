@@ -35,10 +35,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.example.fitnesscentarchat.data.models.ShopItem
+import com.example.fitnesscentarchat.ui.screens.hub.ShopViewModel
 
 
 @Composable
-fun BuyItemOverlay(shopItem: ShopItem?, onBackClick: (Boolean) -> Unit) {
+fun BuyItemOverlay(shopItem: ShopItem?,
+                   onBackClick: (Boolean) -> Unit,
+                   viewModel: ShopViewModel
+) {
     val title = shopItem?.Name ?: "-"
     val price = shopItem?.Price?.toFloat() ?: 0.0f
     val loyaltyPrice = shopItem?.LoyaltyPrice?.toInt() ?: 0
@@ -57,7 +61,7 @@ fun BuyItemOverlay(shopItem: ShopItem?, onBackClick: (Boolean) -> Unit) {
         Column(
             modifier = Modifier
                 .fillMaxWidth(0.85f)
-                .fillMaxHeight(0.8f)
+                .fillMaxHeight(0.75f)
                 .background(
                     Color(0xFF1A1A1A),
                     shape = RoundedCornerShape(16.dp)
@@ -183,9 +187,10 @@ fun BuyItemOverlay(shopItem: ShopItem?, onBackClick: (Boolean) -> Unit) {
                     modifier = Modifier.height(48.dp).width(130.dp)
                 ) {
                     Text(
-                        text = "Pay ${price*quantity}E",
+                        text = "Pay ${price*quantity}Eur",
                         color = Color.Black,
                         fontSize = 16.sp,
+                        maxLines = 1, // Increase from 3 to 6 or higher
                         fontWeight = FontWeight.Medium
                     )
                 }
@@ -193,7 +198,7 @@ fun BuyItemOverlay(shopItem: ShopItem?, onBackClick: (Boolean) -> Unit) {
 
                 Button(
                     onClick = {
-                        // Handle save logic here
+                        viewModel.BuyShopItem(shopItem?.IdShopItem ?: -1)
                         onBackClick(true)
                     },
                     colors = ButtonDefaults.buttonColors(
@@ -206,6 +211,7 @@ fun BuyItemOverlay(shopItem: ShopItem?, onBackClick: (Boolean) -> Unit) {
                         text = "Pay ${loyaltyPrice*quantity}pts",
                         color = Color.White,
                         fontSize = 16.sp,
+                        maxLines = 1, // Increase from 3 to 6 or higher
                         fontWeight = FontWeight.Medium
                     )
                 }

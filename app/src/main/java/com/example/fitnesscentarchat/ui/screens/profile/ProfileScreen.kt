@@ -193,6 +193,7 @@ fun ProfileScreen(
                         Box(){
                             ProfileContent(
                                 uiState,
+                                viewModel=viewModel,
                                 scrollState = scrollState,
                                 onTopTextPositioned = { topTextOffsetY = it },
                                 onEditProfileChange = { editProfileOverlay = it},

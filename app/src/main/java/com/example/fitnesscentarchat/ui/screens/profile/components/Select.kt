@@ -31,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.example.fitnesscentarchat.data.models.MembershipModel
+import com.example.fitnesscentarchat.ui.screens.profile.ProfileViewModel
 
 @Composable
 fun CustomCompactDropdownField(
@@ -81,6 +82,7 @@ fun CustomCompactDropdownField(
 @Composable
 fun MobileSelect(
     items: List<MembershipModel>,
+    viewModel: ProfileViewModel,
     selectedIndex: Int,
     onSelectionChanged: (Int) -> Unit
 ) {
@@ -119,6 +121,7 @@ fun MobileSelect(
                     },
                     onClick = {
                         onSelectionChanged(index)
+                        viewModel.loadProfile(items[index].idFitnessCentar)
                         expanded = false
                     }
                 )

@@ -42,6 +42,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.tooling.preview.Preview
 import coil.request.ImageRequest
 
 
@@ -97,7 +98,11 @@ fun BackgroundTopBar(
     onSearchExpandedChange: (Boolean) -> Unit,
     onSearchTextChange: (String) -> Unit,
     currentUser:User?,
-    onMapClick: () -> Unit
+    onMapClick: () -> Unit,
+    onUserChatSelect: () -> Unit,
+    onUserItemsSelect: () -> Unit
+
+
 ) {
 
 
@@ -116,7 +121,9 @@ fun BackgroundTopBar(
             onSearchTextChange = { onSearchTextChange(it) },
             onSearchExpandChange = { onSearchExpandedChange(true)  },
             onMapClick = onMapClick,
-            currentUser = currentUser
+            currentUser = currentUser,
+            onUserChatSelect=onUserChatSelect,
+            onUserItemsSelect=onUserItemsSelect
         )
     }
 }
@@ -130,11 +137,16 @@ fun TopBarContent(
     onSearchTextChange: (String) -> Unit,
     onSearchExpandChange: (Boolean) -> Unit,
     onMapClick: () -> Unit,
-    currentUser: User?
+    currentUser: User?,
+    onUserChatSelect: () -> Unit,
+    onUserItemsSelect: () -> Unit
+
+
 ) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
+            .height(100.dp)
             .padding(end = 8.dp, top = 8.dp)
     ) {
         // Left-aligned title
@@ -178,8 +190,8 @@ fun TopBarContent(
             ProfileButtonWithDropdown(
                 currentUser = currentUser,
                 size = 36.dp,
-                onMessagesClick = { /* Handle messages */ },
-                onItemsClick = { /* Handle items */ },
+                onMessagesClick = { onUserChatSelect() },
+                onItemsClick = { onUserItemsSelect() },
                 onLogoutClick = { /* Handle logout */ }
             )
         }
@@ -201,9 +213,9 @@ fun ProfileButtonWithDropdown(
         // Profile button
         Box(
             modifier = Modifier
-                .size(40.dp)
+                .size(size)
                 .clip(CircleShape)
-                .background(Color(0xFFFF0000))
+                .background(Color(0x00FF0000))
                 .clickable { isExpanded = !isExpanded },
             contentAlignment = Alignment.Center
         ) {
@@ -221,7 +233,7 @@ fun ProfileButtonWithDropdown(
             } else {
                 Text(
                     text = "${currentUser?.firstName?.first()}${currentUser?.lastName?.first()}",
-                    color = Color.White,
+                    color = Color(0x00000000),
                     fontWeight = FontWeight.Bold
                 )
             }
@@ -246,8 +258,8 @@ fun ProfileButtonWithDropdown(
             Surface(
                 modifier = Modifier
                     .width(160.dp)
-                    .wrapContentHeight()
-                    .offset(x = (-120).dp, y = 48.dp)
+                    .height(200.dp)
+                    .offset(x = (0).dp, y = 0.dp)
                     .zIndex(10f),
                 shape = RoundedCornerShape(8.dp),
                 shadowElevation = 8.dp,
@@ -273,11 +285,6 @@ fun ProfileButtonWithDropdown(
                         }
                     )
 
-                    HorizontalDivider(
-                        modifier = Modifier.padding(horizontal = 16.dp),
-                        color = Color.Black.copy(alpha = 0.1f)
-                    )
-
                     CustomMenuItem(
                         icon = Icons.Default.ExitToApp,
                         text = "Log Out",
@@ -301,3 +308,5 @@ fun ProfileButtonWithDropdown(
         }
     }
 }
+
+

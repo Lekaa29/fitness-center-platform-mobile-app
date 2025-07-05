@@ -3,10 +3,12 @@ package com.example.fitnesscentarchat.ui.screens.profile
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.fitnesscentarchat.data.models.ShopItem
 import com.example.fitnesscentarchat.data.models.User
 import com.example.fitnesscentarchat.data.repository.AttendanceRepository
 import com.example.fitnesscentarchat.data.repository.AuthRepository
 import com.example.fitnesscentarchat.data.repository.MembershipRepository
+import com.example.fitnesscentarchat.data.repository.ShopRepository
 import com.example.fitnesscentarchat.data.repository.UserRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -18,11 +20,13 @@ class ProfileViewModel(
     private val membershipRepository: MembershipRepository,
     private val attendanceRepository: AttendanceRepository,
     private val authRepository: AuthRepository,
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    private val shopRepository: ShopRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(ProfileUiState())
     val uiState: StateFlow<ProfileUiState> = _uiState.asStateFlow()
+
 
 
 
@@ -123,6 +127,7 @@ class ProfileViewModel(
             )
         }
     }
+
 
 
     fun clearError() {

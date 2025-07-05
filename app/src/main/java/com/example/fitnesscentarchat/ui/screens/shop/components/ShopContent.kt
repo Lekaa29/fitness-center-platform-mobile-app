@@ -24,6 +24,7 @@ import com.example.fitnesscentarchat.data.models.ShopItem
 import com.example.fitnesscentarchat.ui.screens.fitnessCenter.components.rememberAnimatedGradientColor
 import com.example.fitnesscentarchat.ui.screens.hub.MembershipUiState
 import com.example.fitnesscentarchat.ui.screens.hub.ShopUiState
+import com.example.fitnesscentarchat.ui.screens.hub.ShopViewModel
 
 
 @Composable
@@ -31,7 +32,8 @@ fun ShopContent(
     uiState: ShopUiState,
     scrollState: androidx.compose.foundation.ScrollState,
     onBuyItemChange: (Boolean) -> Unit,
-    buyItemOverlay: Boolean
+    buyItemOverlay: Boolean,
+    viewModel: ShopViewModel
 ) {
 
     // State to track the selected item
@@ -64,7 +66,7 @@ fun ShopContent(
             horizontalAlignment = CenterHorizontally
         ) {
             Spacer(modifier = Modifier.padding(20.dp))
-            TopTextSection(userMembership = uiState.membership)
+            TopTextSection(fitnessCenterName=uiState.fitnessCenter?.name,userMembership = uiState.membership)
             Spacer(modifier = Modifier.padding(20.dp))
             Box(
                 modifier = Modifier
@@ -101,7 +103,9 @@ fun ShopContent(
                 onBackClick = {
                     selectedItem = null
                     onBuyItemChange(false)
-                }
+                },
+                viewModel=viewModel
+
             )
         }
     }

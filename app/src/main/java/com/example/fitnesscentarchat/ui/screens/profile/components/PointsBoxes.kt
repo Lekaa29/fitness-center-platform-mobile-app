@@ -121,7 +121,7 @@ fun StreakBoxes(streakNumber: String?, pointsNumber: String?) {
                 ) { animatedPointsNumber ->
                     Text(
                         text = "$animatedPointsNumber",
-                        fontSize = 40.sp,
+                        fontSize = 36.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color.White,
                         modifier = Modifier.padding(bottom = 10.dp)

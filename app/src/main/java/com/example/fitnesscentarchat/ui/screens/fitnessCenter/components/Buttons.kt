@@ -90,7 +90,7 @@ fun TopActionsContainer(soonLeaving: Int?, onViewQrClick: () -> Unit) {
                 }
                 Text(text = "soon leaving", fontSize = 12.sp, color = Color(0xF2BDBDBD))
             }
-
+            0xF2BDBDBD
             Column(
                 modifier = Modifier.fillMaxHeight(),
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -116,12 +116,20 @@ fun TopActionsContainer(soonLeaving: Int?, onViewQrClick: () -> Unit) {
 
 
 @Composable
-fun rememberAnimatedGradientColor(): Color {
+fun rememberAnimatedGradientColor(color: String): Color {
     val infiniteTransition = rememberInfiniteTransition()
 
+    val cleanHex = color.removePrefix("0x")
+    val newColor = Color(android.graphics.Color.parseColor("#$cleanHex"))
+    val targetColor = newColor.copy(
+        red = (newColor.red * 0.7f).coerceIn(0f, 1f),
+        green = (newColor.green * 0.7f).coerceIn(0f, 1f),
+        blue = (newColor.blue * 0.7f).coerceIn(0f, 1f)
+    )
+
     return infiniteTransition.animateColor(
-        initialValue = Color(0xFF807D24),
-        targetValue = Color(0xFF5B5F21),
+        initialValue = newColor,
+        targetValue = targetColor,
         animationSpec = infiniteRepeatable(
             animation = tween(durationMillis = 3000, easing = FastOutSlowInEasing),
             repeatMode = RepeatMode.Reverse

@@ -26,14 +26,16 @@ import com.example.fitnesscentarchat.data.repository.ShopRepository
 import com.example.fitnesscentarchat.data.repository.UserRepository
 import com.example.fitnesscentarchat.ui.screens.chat.ChatScreen
 import com.example.fitnesscentarchat.ui.screens.chat.ChatViewModel
+import com.example.fitnesscentarchat.ui.screens.chat.ChatsScreen
 import com.example.fitnesscentarchat.ui.screens.fitnessCenter.FitnessCenterScreen
 import com.example.fitnesscentarchat.ui.screens.fitnessCenter.FitnessCenterViewModel
 import com.example.fitnesscentarchat.ui.screens.fitnessCenter.FitnessCenterWithBottomNav
 import com.example.fitnesscentarchat.ui.screens.hub.HubScreen
 import com.example.fitnesscentarchat.ui.screens.hub.HubViewModel
-import com.example.fitnesscentarchat.ui.screens.hub.MembershipViewModel
+import com.example.fitnesscentarchat.ui.screens.hub.ShopViewModel
 import com.example.fitnesscentarchat.ui.screens.login.LoginScreen
 import com.example.fitnesscentarchat.ui.screens.login.LoginViewModel
+import com.example.fitnesscentarchat.ui.screens.shop.PurchasesScreen
 import com.example.fitnesscentarchat.ui.screens.users.UsersScreen
 import com.example.fitnesscentarchat.ui.screens.users.UsersViewModel
 import com.google.gson.Gson
@@ -99,6 +101,13 @@ class MainActivity : ComponentActivity() {
                                 viewModel = viewModel,
                                 onFitnessCenterSelected = { fitnessCenterId ->
                                     navController.navigate("fitnessCenter/$fitnessCenterId")
+                                },
+                                onUserChatSelect = {
+                                    navController.navigate("messages")
+
+                                },
+                                onUserItemsSelect = {
+                                    navController.navigate("purchases")
                                 }
                             )
                         }
@@ -111,6 +120,30 @@ class MainActivity : ComponentActivity() {
                                 viewModel = viewModel,
                                 onUserSelected = { conversationId ->
                                     navController.navigate("conversation/$conversationId")
+                                }
+                            )
+                        }
+
+                        composable("messages") {
+                            val viewModel = ChatViewModel(messageRepository, userRepository)
+                            ChatsScreen(
+                                viewModel = viewModel,
+                                onChatSelected = { conversationId, userId, chatName ->
+                                    navController.navigate("conversation/$conversationId/$userId/$chatName")
+                                },
+                                onNavigateBack = {
+                                    navController.popBackStack()
+                                }
+                            )
+                        }
+
+                        // New route for user's bought items
+                        composable("purchases") {
+                            val viewModel = ShopViewModel(shopRepository, membershipRepository, fitnessCenterRepository)
+                            PurchasesScreen(
+                                viewModel = viewModel,
+                                onNavigateBack = {
+                                    navController.popBackStack()
                                 }
                             )
                         }

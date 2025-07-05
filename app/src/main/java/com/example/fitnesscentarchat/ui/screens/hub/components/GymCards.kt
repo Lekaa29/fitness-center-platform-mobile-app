@@ -95,7 +95,7 @@ fun gymCard(
 }
 
 fun getExpiryStatus(deadline: String?): String {
-    if (deadline.isNullOrEmpty()) return "No deadline"
+    if (deadline.isNullOrEmpty()) return "No membership"
 
     return try {
         val formatter = DateTimeFormatter.ISO_DATE_TIME // Example format: "2024-06-25T14:30:00Z"

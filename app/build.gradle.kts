@@ -103,6 +103,9 @@ dependencies {
 
     // Hilt for ViewModels
     implementation("androidx.hilt:hilt-navigation-compose:1.1.0")
+    implementation("com.google.zxing:core:3.5.3")
+    implementation("com.stripe:stripe-android:20.35.0")
+
 
 
 }

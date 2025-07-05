@@ -4,9 +4,16 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.ShoppingCart
+import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.outlined.Person
+import androidx.compose.material.icons.outlined.ShoppingCart
+import androidx.compose.material.icons.outlined.Star
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import com.example.fitnesscentarchat.data.repository.AttendanceRepository
 import com.example.fitnesscentarchat.data.repository.AuthRepository
@@ -51,7 +58,8 @@ fun FitnessCenterWithBottomNav(
     }
 
     val shopViewModel = remember {
-        ShopViewModel(shopRepository = shopRepository, membershipRepository = membershipRepository)
+        ShopViewModel(shopRepository = shopRepository, membershipRepository = membershipRepository,
+            fitnessCenterRepository = fitnessCenterRepository)
     }
 
     val membershipViewModel = remember {
@@ -64,7 +72,8 @@ fun FitnessCenterWithBottomNav(
             membershipRepository = membershipRepository,
             attendanceRepository = attendanceRepository,
             authRepository = authRepository,
-            userRepository = userRepository
+            userRepository = userRepository,
+            shopRepository = shopRepository
         )
     }
 
@@ -80,32 +89,10 @@ fun FitnessCenterWithBottomNav(
 
     Scaffold(
         bottomBar = {
-            NavigationBar {
-                NavigationBarItem(
-                    selected = currentTab == "overview",
-                    onClick = { currentTab = "overview" },
-                    icon = { Icon(Icons.Default.Home, contentDescription = null) },
-                    label = { Text("Overview") }
-                )
-                NavigationBarItem(
-                    selected = currentTab == "shop",
-                    onClick = { currentTab = "shop" },
-                    icon = { Icon(Icons.Default.Person, contentDescription = null) },
-                    label = { Text("Shop") }
-                )
-                NavigationBarItem(
-                    selected = currentTab == "membership",
-                    onClick = { currentTab = "membership" },
-                    icon = { Icon(Icons.Default.Person, contentDescription = null) },
-                    label = { Text("Membership") }
-                )
-                NavigationBarItem(
-                    selected = currentTab == "profile",
-                    onClick = { currentTab = "profile" },
-                    icon = { Icon(Icons.Default.Person, contentDescription = null) },
-                    label = { Text("Profile") }
-                )
-            }
+            CustomBottomNavigationBar(
+                currentTab = currentTab,
+                onTabSelected = { currentTab = it }
+            )
         }
     ) { paddingValues ->
         Box(modifier = Modifier.padding(paddingValues)) {
@@ -152,6 +139,64 @@ fun FitnessCenterWithBottomNav(
         }
     }
 }
+
+
+@Composable
+fun CustomBottomNavigationBar(
+    currentTab: String,
+    onTabSelected: (String) -> Unit
+) {
+    val items = listOf(
+        NavigationItem("overview", Icons.Default.Home, Icons.Filled.Home, "Home"),
+        NavigationItem("shop", Icons.Outlined.ShoppingCart, Icons.Filled.ShoppingCart, "Shop"),
+        NavigationItem("membership", Icons.Outlined.Star, Icons.Filled.Star, "Membership"),
+        NavigationItem("profile", Icons.Outlined.Person, Icons.Filled.Person, "Profile")
+    )
+
+    NavigationBar(
+        containerColor = Color.Black
+    ) {
+        items.forEach { item ->
+            val isSelected = currentTab == item.route
+
+            // Different icon based on selection
+            val icon = if (isSelected) item.selectedIcon else item.unselectedIcon
+
+            NavigationBarItem(
+                selected = isSelected,
+                onClick = { onTabSelected(item.route) },
+                icon = {
+                    Icon(
+                        imageVector = icon,
+                        contentDescription = item.label,
+                        tint = if (isSelected) Color.White else Color.Gray
+                    )
+                },
+                label = {
+                    Text(
+                        text = item.label,
+                        color = if (isSelected) Color.White else Color.Gray
+                    )
+                },
+                alwaysShowLabel = true, // You can control label visibility here
+                colors = NavigationBarItemDefaults.colors(
+                    indicatorColor = Color.Transparent // Removes the "bubble"
+                )
+            )
+        }
+    }
+}
+
+data class NavigationItem(
+    val route: String,
+    val unselectedIcon: ImageVector,
+    val selectedIcon: ImageVector,
+    val label: String
+)
+
+
+
+
 /*
 
 // ALTERNATIVE APPROACH: Pre-compose all screens but show only one

@@ -10,7 +10,7 @@ data class FitnessCenter(
     @Json(name = "latitude") val latitude: Double,
     @Json(name = "longitude") val longitude: Double,
     @Json(name = "pictureLink") val pictureLink: String?,
-
+    @Json(name = "color") val color: String?,
     @Json(name = "name") val name: String
 )
 

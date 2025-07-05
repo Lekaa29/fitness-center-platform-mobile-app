@@ -26,7 +26,8 @@ import com.google.maps.android.compose.rememberCameraPositionState
 @Composable
 fun MapContent(
     gyms: List<FitnessCenter>,
-    selectedGymFromTable: FitnessCenter? = null, // Add parameter for externally selected gym
+    selectedGymFromTable: FitnessCenter? = null,
+    onFitnessCenterSelected: (Int) -> Unit,
     modifier: Modifier = Modifier
 ) {
     var selectedGym by remember { mutableStateOf<FitnessCenter?>(null) }
@@ -91,7 +92,9 @@ fun MapContent(
             GymBottomSheet(
                 gym = gym,
                 onDismiss = { selectedGym = null },
-                modifier = Modifier.align(Alignment.BottomCenter)
+                modifier = Modifier.align(Alignment.BottomCenter),
+                onFitnessCenterSelected=onFitnessCenterSelected
+
             )
         }
     }

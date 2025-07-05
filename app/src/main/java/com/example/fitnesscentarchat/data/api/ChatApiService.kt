@@ -100,12 +100,14 @@ interface ChatApiService {
 
     @POST("Shop/BuyShopItem/{shopItemId}")
     suspend fun buyShopItem(
-        @Path("recipientId") shopItemId: Int,
+        @Path("shopItemId") shopItemId: Int,
     ): Response<Any>
 
     @GET("Conversation/{conversationId}")
     suspend fun getMessagesByConversation(@Path("conversationId") conversationId: Int): List<Message>
 
+    @GET("Conversation/{conversationId}/participants")
+    suspend fun getConversationParticipants(@Path("conversationId") conversationId: Int): List<User>
 
     @GET("Conversation/id/{userId}")
     suspend fun getConversationIdByRecepient(@Path("userId") userId: Int): Int

@@ -14,7 +14,11 @@ import com.example.fitnesscentarchat.ui.screens.map.components.MapContent
 import com.example.fitnesscentarchat.ui.screens.map.components.MapTopBar
 
 @Composable
-fun MapScreen(onBackClick: () -> Unit, selectedGymForMap: FitnessCenter?, uiState: HubUiState) {
+fun MapScreen(onBackClick: () -> Unit,
+              selectedGymForMap: FitnessCenter?,
+              uiState: HubUiState,
+              onFitnessCenterSelected: (Int) -> Unit
+) {
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -23,7 +27,9 @@ fun MapScreen(onBackClick: () -> Unit, selectedGymForMap: FitnessCenter?, uiStat
         MapContent(
             modifier = Modifier.fillMaxSize(),
             selectedGymFromTable = selectedGymForMap,
-            gyms = uiState.fitnessCenters
+            gyms = uiState.fitnessCenters,
+            onFitnessCenterSelected=onFitnessCenterSelected
+
         )
 
         MapTopBar(

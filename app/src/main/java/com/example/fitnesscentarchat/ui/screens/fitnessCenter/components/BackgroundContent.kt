@@ -53,7 +53,7 @@ fun FitnessCenterContent(
     viewQROverlay: Boolean,
     viewModel: FitnessCenterViewModel
 ) {
-    val animatedColor = rememberAnimatedGradientColor()
+    val animatedColor = rememberAnimatedGradientColor(uiState.fitnessCenter?.color ?: "0xFF000000")
 
     Log.d("center array", "${uiState.coaches}")
     Log.d("center array", "${uiState.news}")

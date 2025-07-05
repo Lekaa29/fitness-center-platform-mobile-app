@@ -31,6 +31,7 @@ import com.example.fitnesscentarchat.data.models.FitnessCenter
 fun GymBottomSheet(
     gym: FitnessCenter,
     onDismiss: () -> Unit,
+    onFitnessCenterSelected: (Int) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Card(
@@ -84,8 +85,8 @@ fun GymBottomSheet(
 
                 Button(
                     onClick = {
-                        // Add your navigation logic here
-                        // For example, open directions to the gym
+                        onFitnessCenterSelected(gym.idFitnessCentar)
+
                     }
                 ) {
                     Text("Open")

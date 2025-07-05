@@ -129,7 +129,7 @@ fun ChatScreen(
                 .padding(paddingValues)
                 .background(brush = Brush.linearGradient(
                     listOf(
-                        Color(0xFF020C41),
+                        Color(0xFF02092B),
                         Color(0xFF020105),
                     )
                 ))

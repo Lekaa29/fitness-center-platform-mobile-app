@@ -38,8 +38,12 @@ import com.example.fitnesscentarchat.data.models.MembershipPackage
 @Composable
 fun MembershipItemOverlay(membershipPackage: MembershipPackage?, onBackClick: (Boolean) -> Unit) {
     val title = membershipPackage?.title ?: "title"
-    val price = membershipPackage?.price?.toFloat() ?: 0.0f
+    var price = membershipPackage?.price?.toFloat() ?: 0.0f
+    if(membershipPackage?.discount != null && membershipPackage.discount != 0){
+        val fraction = membershipPackage?.discount ?: 0
+        price = membershipPackage.price*(1-(fraction/100.0f))
 
+    }
     var quantity by remember { mutableStateOf(1) }
 
 

@@ -1,5 +1,7 @@
 package com.example.fitnesscentarchat.ui.screens.profile.components
 
+import java.text.SimpleDateFormat
+import java.util.Locale
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -34,7 +36,8 @@ import com.example.fitnesscentarchat.data.models.User
 
 @Composable
 fun TopTextSection(user: User?, onTopTextPositioned: (Float) -> Unit, onEditProfileChange: () -> Unit) {
-
+    var creationDate = formatDateString(user?.creationDate ?: "")
+    creationDate = "Joined ${creationDate}"
     Row(
         modifier = Modifier
             .padding(vertical = 20.dp)
@@ -79,7 +82,7 @@ fun TopTextSection(user: User?, onTopTextPositioned: (Float) -> Unit, onEditProf
 
                 )
             Text(
-                text = user?.creationDate?.toString() ?: "joined ?",
+                text = creationDate ?: "joined ?",
                 color = Color(0xFFB9B9B9),
                 fontSize = 12.sp,
                 fontWeight = FontWeight.Light,
@@ -107,4 +110,21 @@ fun TopTextSection(user: User?, onTopTextPositioned: (Float) -> Unit, onEditProf
         }
     }
 
+}
+
+
+
+fun formatDateString(input: String): String {
+    if (input.isBlank()) return ""
+
+    return try {
+        val inputFormat = SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault())
+        val outputFormat = SimpleDateFormat("yyyy/MM/dd", Locale.getDefault())
+
+        val date = inputFormat.parse(input)
+        outputFormat.format(date!!)
+    } catch (e: Exception) {
+        Log.e("DateParsing", "Error parsing date: $input", e)
+        "Invalid Date"
+    }
 }

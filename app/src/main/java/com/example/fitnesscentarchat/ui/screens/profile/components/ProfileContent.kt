@@ -26,10 +26,12 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.example.fitnesscentarchat.ui.screens.profile.ProfileUiState
+import com.example.fitnesscentarchat.ui.screens.profile.ProfileViewModel
 
 @Composable
 fun ProfileContent(
     uiState: ProfileUiState,
+    viewModel: ProfileViewModel,
     scrollState: androidx.compose.foundation.ScrollState,
     onTopTextPositioned: (Float) -> Unit,
     onEditProfileChange: (Boolean) -> Unit,
@@ -67,6 +69,7 @@ fun ProfileContent(
 
             MobileSelect(
                 items = uiState.memberships,
+                viewModel=viewModel,
                 selectedIndex = selectedIndex,
                 onSelectionChanged = { selectedIndex = it }
             )

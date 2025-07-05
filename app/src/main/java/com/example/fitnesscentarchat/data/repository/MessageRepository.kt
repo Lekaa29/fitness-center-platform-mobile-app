@@ -4,6 +4,7 @@ import android.util.Log
 import com.example.fitnesscentarchat.data.api.ChatApiService
 import com.example.fitnesscentarchat.data.models.Conversation
 import com.example.fitnesscentarchat.data.models.Message
+import com.example.fitnesscentarchat.data.models.User
 import com.example.fitnesscentarchat.data.repository.interfaces.IAuthRepository
 import com.example.fitnesscentarchat.data.repository.interfaces.IMessageRepository
 import kotlinx.coroutines.Dispatchers
@@ -59,6 +60,24 @@ class MessageRepository(
             Result.failure(e)
         }
     }
+
+    override suspend fun getUsersConversations(): Result<List<Conversation>> {
+        return try {
+            Result.success(apiService.getUsersConversations())
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    override suspend fun getConversationParticipants(conversationId: Int): Result<List<User>> {
+        return try {
+            Result.success(apiService.getConversationParticipants(conversationId))
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+
 
     override fun getMessagesFlow(conversationId: Int): Flow<List<Message>> = flow {
         while (true) {

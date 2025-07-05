@@ -27,9 +27,9 @@ import com.example.fitnesscentarchat.data.models.MembershipModel
 
 
 @Composable
-fun TopTextSection(userMembership: MembershipModel?) {
-    val pointsBalance = userMembership?.loyaltyPoints ?: "0"
-
+fun TopTextSection(fitnessCenterName:String?, userMembership: MembershipModel?) {
+    val pointsBalance = userMembership?.loyaltyPoints ?: 0
+    val title = fitnessCenterName ?: ""
     Column(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -40,25 +40,29 @@ fun TopTextSection(userMembership: MembershipModel?) {
 
             ){
                 Box(
-                    modifier = Modifier.border(
-                        1.dp,
-                        Color(0xFFFFFFFF),
-                        shape = RoundedCornerShape(8.dp)
-                    )
-                        .background(color=Color(0x6B191919), shape = RoundedCornerShape(8.dp)
+                    modifier = Modifier
+                        .border(
+                            1.dp,
+                            Color(0xFFFFFFFF),
+                            shape = RoundedCornerShape(8.dp)
+                        )
+                        .background(
+                            color = Color(0x6B191919), shape = RoundedCornerShape(8.dp)
                         ),
                 ){
-                    Text("INSPECTOR VINKOVCI", color=Color(0xFFFFFFFF),modifier=Modifier.padding(8.dp)
+                    Text("${title}", color=Color(0xFFFFFFFF),modifier=Modifier.padding(8.dp)
                     )
                 }
                 Spacer(modifier = Modifier.size(10.dp))
                 Box(
-                    modifier = Modifier.border(
-                        1.dp,
-                        Color(0xFFFFFFFF),
-                        shape = RoundedCornerShape(8.dp)
-                    )
-                        .background(color=Color(0x6B191919), shape = RoundedCornerShape(8.dp)
+                    modifier = Modifier
+                        .border(
+                            1.dp,
+                            Color(0xFFFFFFFF),
+                            shape = RoundedCornerShape(8.dp)
+                        )
+                        .background(
+                            color = Color(0x6B191919), shape = RoundedCornerShape(8.dp)
                         ),
                 ){
                     Text("SHOP", color=Color(0xFFFFFFFF),modifier=Modifier.padding(8.dp)
@@ -67,7 +71,7 @@ fun TopTextSection(userMembership: MembershipModel?) {
             }
         }
         Spacer(modifier = Modifier.size(20.dp))
-        GradientBorderBox(userMembership?.points.toString())
+        GradientBorderBox(pointsBalance.toString())
         Spacer(modifier = Modifier.size(10.dp))
 
     }
@@ -109,7 +113,7 @@ fun GradientBorderBox(points: String) {
             .padding(4.dp)
     ) {
         Text(
-            text = "2402 PTS",//"$points PTS",
+            text = "$points PTS",
             fontSize = 18.sp,
             fontWeight = FontWeight.Bold,
             color = Color.Black

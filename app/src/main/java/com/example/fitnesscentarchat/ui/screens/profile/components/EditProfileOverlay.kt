@@ -110,7 +110,7 @@ fun EditUserOverlay(user: User?,
         Column(
             modifier = Modifier
                 .fillMaxWidth(0.85f)
-                .fillMaxHeight(0.6f)
+                .fillMaxHeight(0.75f)
                 .background(
                     Color(0xFF1A1A1A),
                     shape = RoundedCornerShape(16.dp)

@@ -44,7 +44,11 @@ fun HubContent(
     onSearchExpandedChange: (Boolean) -> Unit,
     onSearchTextChange: (String) -> Unit,
     recentSearches: List<String>,
-    onGymLocationClick: (FitnessCenter) -> Unit = {}) {
+    onGymLocationClick: (FitnessCenter) -> Unit = {},
+    onUserChatSelect: () -> Unit,
+    onUserItemsSelect: () -> Unit
+
+) {
     val scrollState = rememberScrollState()
 
     var topTextOffsetY by remember { mutableStateOf(0f) }
@@ -57,7 +61,9 @@ fun HubContent(
             isSearchExpanded = isSearchExpanded,
             onSearchExpandedChange = onSearchExpandedChange,
             onSearchTextChange = onSearchTextChange,
-            currentUser = uiState.currentUser
+            currentUser = uiState.currentUser,
+            onUserChatSelect=onUserChatSelect,
+            onUserItemsSelect=onUserItemsSelect
         )
         Box(){
             BackgroundScrollableContent(

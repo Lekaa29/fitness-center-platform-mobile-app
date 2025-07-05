@@ -38,8 +38,14 @@ fun MembershipItem(
     onClick: () -> Unit // Changed to simple callback
 ) {
     val title = membershipPackage.title ?: "title"
-    val price = String.format("%.2f", membershipPackage.price)
     val discount = membershipPackage.discount
+    var price = String.format("%.2f", membershipPackage.price)
+
+    if(discount != null && discount != 0){
+        val fraction = discount ?: 0
+        price = String.format("%.2f", membershipPackage.price*(1-(fraction/100.0f)))
+
+    }
     Log.d("item", "$membershipPackage")
 
     Column(
@@ -78,7 +84,7 @@ fun MembershipItem(
 
         if (discount != null && discount != 0) {
             Text(
-                text = "$discount OFF",
+                text = "$discount% OFF",
                 fontWeight = FontWeight.Normal,
                 color = Color.Red,
                 fontSize = 18.sp,

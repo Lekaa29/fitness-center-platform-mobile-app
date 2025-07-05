@@ -21,7 +21,10 @@ import com.example.fitnesscentarchat.ui.screens.map.MapScreen
 @Composable
 fun HubScreen(
     viewModel: HubViewModel,
-    onFitnessCenterSelected: (Int) -> Unit
+    onFitnessCenterSelected: (Int) -> Unit,
+    onUserChatSelect: () -> Unit,
+    onUserItemsSelect: () -> Unit
+
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
@@ -40,7 +43,9 @@ fun HubScreen(
             selectedGymForMap = null
         },
             selectedGymForMap,
-            uiState)
+            uiState,
+            onFitnessCenterSelected
+        )
     } else {
         HubContent(
             onFitnessCenterSelected,
@@ -54,7 +59,9 @@ fun HubScreen(
             onGymLocationClick = { gym ->
                 selectedGymForMap = gym
                 isMapMode = true
-            }
+            },
+            onUserChatSelect=onUserChatSelect,
+            onUserItemsSelect=onUserItemsSelect
         )
 
     }

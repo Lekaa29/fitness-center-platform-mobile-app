@@ -79,8 +79,10 @@ fun ShopScreen(
                             scrollState = scrollState,
                             onBuyItemChange = { buyItemOverlay = it},
                             buyItemOverlay = buyItemOverlay,
-                            uiState=uiState
-                        )
+                            uiState=uiState,
+                            viewModel=viewModel)
+
+
                     }
 
                 }
