@@ -22,11 +22,29 @@ class ShopViewModel(
     private val _uiState = MutableStateFlow(ShopUiState())
     val uiState: StateFlow<ShopUiState> = _uiState.asStateFlow()
 
-    private val _userItems = MutableStateFlow<List<ShopItem>>(emptyList())
-    val userItems: StateFlow<List<ShopItem>> = _userItems.asStateFlow()
 
-    private val _isLoadingUserItems = MutableStateFlow(false)
-    val isLoadingUserItems: StateFlow<Boolean> = _isLoadingUserItems.asStateFlow()
+
+    fun loadShopItems(){
+        viewModelScope.launch {
+            shopRepository.GetUserItems().fold(
+                onSuccess = { shopItems ->
+                    Log.d("ShopViewModel", "Successfully received ${shopItems.size} user items")
+                    shopItems.forEachIndexed { index, item ->
+                        Log.d("ShopViewModel", "User Item $index: Name=${item.Name}, Price=${item.Price}, ID=${item.IdShopItem}")
+                    }
+                    _uiState.update { it.copy(shopItems = shopItems, isLoading = false) }
+                },
+                onFailure = { error ->
+                    Log.e("ShopViewModel", "Failed to get user items: ${error.message}", error)
+                    Log.e("ShopViewModel", "Error type: ${error.javaClass.simpleName}")
+
+
+                    // Also log the stack trace for debugging
+                    error.printStackTrace()
+                }
+            )
+        }
+    }
 
     fun loadShop(fitnessCenterId: Int) {
         Log.d("ShopViewModel", "loadShop called with fitnessCenterId: $fitnessCenterId")
@@ -88,41 +106,6 @@ class ShopViewModel(
         }
     }
 
-    fun getUserItems() {
-        Log.d("ShopViewModel", "getUserItems called")
-
-        viewModelScope.launch {
-            _isLoadingUserItems.value = true
-
-            try {
-                Log.d("ShopViewModel", "Making API call to get user items...")
-
-                shopRepository.GetUserItems().fold(
-                    onSuccess = { shopItems ->
-                        Log.d("ShopViewModel", "Successfully received ${shopItems.size} user items")
-                        shopItems.forEachIndexed { index, item ->
-                            Log.d("ShopViewModel", "User Item $index: Name=${item.Name}, Price=${item.Price}, ID=${item.IdShopItem}")
-                        }
-                        _userItems.value = shopItems
-                        _isLoadingUserItems.value = false
-                    },
-                    onFailure = { error ->
-                        Log.e("ShopViewModel", "Failed to get user items: ${error.message}", error)
-                        Log.e("ShopViewModel", "Error type: ${error.javaClass.simpleName}")
-                        _userItems.value = emptyList()
-                        _isLoadingUserItems.value = false
-
-                        // Also log the stack trace for debugging
-                        error.printStackTrace()
-                    }
-                )
-            } catch (e: Exception) {
-                Log.e("ShopViewModel", "Exception in getUserItems: ${e.message}", e)
-                _userItems.value = emptyList()
-                _isLoadingUserItems.value = false
-            }
-        }
-    }
 
     fun BuyShopItem(shopItemId: Int) {
         Log.d("ShopViewModel", "BuyShopItem called with ID: $shopItemId")
@@ -133,7 +116,7 @@ class ShopViewModel(
                     onSuccess = {
                         Log.d("ShopViewModel", "Successfully bought item with ID: $shopItemId")
                         // Refresh user items after purchase
-                        getUserItems()
+                        loadShop(uiState.value.fitnessCenter?.idFitnessCentar ?: 0)
                     },
                     onFailure = { error ->
                         Log.e("ShopViewModel", "Failed to buy item $shopItemId: ${error.message}", error)
@@ -153,6 +136,6 @@ class ShopViewModel(
     // Add this method to manually trigger a refresh
     fun refreshUserItems() {
         Log.d("ShopViewModel", "refreshUserItems called")
-        getUserItems()
+        loadShopItems()
     }
 }

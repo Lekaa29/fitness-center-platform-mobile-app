@@ -21,6 +21,8 @@ fun FitnessCenterScreen(
     viewModel: FitnessCenterViewModel,
     onNavigateBack: () -> Unit,
     onChatClicked: (Int, Int, String) -> Unit,
+    onUserChatSelect: () -> Unit,
+    onUserItemsSelect: () -> Unit
 ) {
 
     val uiState by remember {
@@ -71,7 +73,9 @@ fun FitnessCenterScreen(
                     onshowGraphOverlayChange = { showGraphOverlay = it},
                     onViewQRChange = { viewQROverlay = it},
                     viewQROverlay = viewQROverlay,
-                    viewModel = viewModel
+                    viewModel = viewModel ,
+                    onUserChatSelect=onUserChatSelect,
+                    onUserItemsSelect=onUserItemsSelect
                 )
             }
 

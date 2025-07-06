@@ -25,6 +25,7 @@ fun MembershipScreen(
     val uiState by remember {
         viewModel.uiState
     }.collectAsStateWithLifecycle()
+
     var currentUser by remember { mutableStateOf<Int?>(null) }
 
     val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSSSSS")
@@ -59,7 +60,8 @@ fun MembershipScreen(
                             onTopTextPositioned = { topTextOffsetY = it },
                             onMembershipItemChange = { membershipItemOverlay = it},
                             membershipItemOverlay = membershipItemOverlay,
-                            uiState = uiState
+                            uiState = uiState,
+                            viewModel = viewModel
                         )
                     }
 

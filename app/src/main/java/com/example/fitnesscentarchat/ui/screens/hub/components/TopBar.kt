@@ -1,5 +1,4 @@
 package com.example.fitnesscentarchat.ui.screens.hub.components
-
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -54,13 +53,13 @@ private fun CustomMenuItem(
     isDestructive: Boolean = false
 ) {
     val contentColor = if (isDestructive) {
-        Color(0xFFDC3545)
+        Color(0xFFFF6B6B) // Lighter red for dark theme
     } else {
-        Color.Black
+        Color(0xFFE1E1E1) // Light gray for dark theme
     }
 
     val backgroundColor by animateColorAsState(
-        targetValue = if (isDestructive) Color(0xFFFFF5F5) else Color.Transparent,
+        targetValue = if (isDestructive) Color(0xFF2D1B1B) else Color.Transparent, // Dark red background
         animationSpec = tween(200),
         label = "background_color"
     )
@@ -111,6 +110,7 @@ fun BackgroundTopBar(
         modifier = Modifier
             .fillMaxWidth()
             .height(52.dp)
+            .background(Color(0xFF1A1A1A)) // Dark background
             .graphicsLayer(alpha = 1.0f)
             .zIndex(1f)
     ) {
@@ -147,6 +147,7 @@ fun TopBarContent(
         modifier = Modifier
             .fillMaxWidth()
             .height(100.dp)
+            .background(Color(0x001A1A1A)) // Dark background
             .padding(end = 8.dp, top = 8.dp)
     ) {
         // Left-aligned title
@@ -161,7 +162,7 @@ fun TopBarContent(
             if(isSearchExpanded == false){
                 Text(
                     text = "FitnessCentar",
-                    color = Color.White,
+                    color = Color(0xFFE1E1E1), // Light gray for dark theme
                     fontWeight = FontWeight.ExtraBold,
                     fontSize = 16.sp,
                     modifier = Modifier
@@ -215,11 +216,11 @@ fun ProfileButtonWithDropdown(
             modifier = Modifier
                 .size(size)
                 .clip(CircleShape)
-                .background(Color(0x00FF0000))
+                .background(Color(0xFF2D2D2D)) // Dark gray background
                 .clickable { isExpanded = !isExpanded },
             contentAlignment = Alignment.Center
         ) {
-            if (currentUser?.pictureLink != null && currentUser.pictureLink != "") {
+            if (currentUser?.pictureLink?.isNotEmpty() == true) {
                 AsyncImage(
                     model = ImageRequest.Builder(LocalContext.current)
                         .data(currentUser.pictureLink)
@@ -232,81 +233,80 @@ fun ProfileButtonWithDropdown(
                 )
             } else {
                 Text(
-                    text = "${currentUser?.firstName?.first()}${currentUser?.lastName?.first()}",
-                    color = Color(0x00000000),
+                    text = "${currentUser?.firstName?.firstOrNull() ?: ""}${currentUser?.lastName?.firstOrNull() ?: ""}",
+                    color = Color(0xFFE1E1E1), // Light gray text
                     fontWeight = FontWeight.Bold
                 )
             }
         }
 
-        // Dropdown menu with custom styling
-        AnimatedVisibility(
-            visible = isExpanded,
-            enter = fadeIn(animationSpec = tween(300)) +
-                    scaleIn(
-                        animationSpec = tween(300, easing = FastOutSlowInEasing),
-                        initialScale = 0.8f,
-                        transformOrigin = TransformOrigin(1f, 0f)
-                    ),
-            exit = fadeOut(animationSpec = tween(200)) +
-                    scaleOut(
-                        animationSpec = tween(200, easing = FastOutLinearInEasing),
-                        targetScale = 0.8f,
-                        transformOrigin = TransformOrigin(1f, 0f)
-                    )
+        // Dropdown menu
+        DropdownMenu(
+            expanded = isExpanded,
+            onDismissRequest = { isExpanded = false },
+            modifier = Modifier
+                .width(160.dp)
+                .background(Color(0xFF000000)) // Dark dropdown background
         ) {
-            Surface(
-                modifier = Modifier
-                    .width(160.dp)
-                    .height(200.dp)
-                    .offset(x = (0).dp, y = 0.dp)
-                    .zIndex(10f),
-                shape = RoundedCornerShape(8.dp),
-                shadowElevation = 8.dp,
-                color = Color.White,
-                border = BorderStroke(1.dp, Color.Black.copy(alpha = 0.08f))
-            ) {
-                Column {
-                    CustomMenuItem(
-                        icon = Icons.Default.Message,
-                        text = "Messages",
-                        onClick = {
-                            onMessagesClick()
-                            isExpanded = false
-                        }
+            DropdownMenuItem(
+                text = {
+                    Text(
+                        "Messages",
+                        color = Color(0xFFE1E1E1) // Light gray text
                     )
-
-                    CustomMenuItem(
-                        icon = Icons.Default.Inventory2,
-                        text = "Items",
-                        onClick = {
-                            onItemsClick()
-                            isExpanded = false
-                        }
-                    )
-
-                    CustomMenuItem(
-                        icon = Icons.Default.ExitToApp,
-                        text = "Log Out",
-                        onClick = {
-                            onLogoutClick()
-                            isExpanded = false
-                        },
-                        isDestructive = true
+                },
+                onClick = {
+                    onMessagesClick()
+                    isExpanded = false
+                },
+                leadingIcon = {
+                    Icon(
+                        Icons.Default.Message,
+                        contentDescription = null,
+                        tint = Color(0xFFE1E1E1) // Light gray icon
                     )
                 }
-            }
-        }
-    }
+            )
 
-    // Handle outside clicks by detecting when the dropdown loses focus
-    // This is a cleaner approach that won't interfere with layout
-    if (isExpanded) {
-        // Auto-dismiss after a delay or on back press
-        BackHandler(enabled = isExpanded) {
-            isExpanded = false
+            DropdownMenuItem(
+                text = {
+                    Text(
+                        "Items",
+                        color = Color(0xFFE1E1E1) // Light gray text
+                    )
+                },
+                onClick = {
+                    onItemsClick()
+                    isExpanded = false
+                },
+                leadingIcon = {
+                    Icon(
+                        Icons.Default.Inventory2,
+                        contentDescription = null,
+                        tint = Color(0xFFE1E1E1) // Light gray icon
+                    )
+                }
+            )
+
+            DropdownMenuItem(
+                text = {
+                    Text(
+                        "Log Out",
+                        color = Color(0xFFFF6B6B) // Light red for dark theme
+                    )
+                },
+                onClick = {
+                    onLogoutClick()
+                    isExpanded = false
+                },
+                leadingIcon = {
+                    Icon(
+                        Icons.Default.ExitToApp,
+                        contentDescription = null,
+                        tint = Color(0xFFFF6B6B) // Light red icon
+                    )
+                }
+            )
         }
     }
 }
-
-

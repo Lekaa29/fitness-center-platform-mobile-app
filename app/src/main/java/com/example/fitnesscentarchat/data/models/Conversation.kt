@@ -7,6 +7,8 @@ data class Conversation (
     @Json(name = "title") val Title: String?,
     @Json(name = "isGroup") val IsGroup: Boolean,
     @Json(name = "isDeleted") val IsDeleted: Boolean,
+    @Json(name = "unreadCount") val UnreadCount: Int,
+    @Json(name = "imageUrl") val ImageUrl: String? = "",
     @Json(name = "groupOwnerId") val groupOwnerId: Int
 )
 

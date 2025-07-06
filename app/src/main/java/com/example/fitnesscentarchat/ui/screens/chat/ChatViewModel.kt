@@ -84,6 +84,10 @@ class ChatViewModel(
                     .distinctUntilChanged()
                     .collect { messages ->
                         Log.d("VIEWMODEL", "=== RECEIVED ${messages.size} MESSAGES ===")
+                        messageRepository.conversationMarkAllAsRead(conversationId)
+
+
+
                         messages.forEachIndexed { index, message ->
                             Log.d("VIEWMODEL", "Message $index: ${message.text} (id=${message.id})")
                         }

@@ -68,7 +68,6 @@ fun ShopItem(shopItem: ShopItem, onItemClick: (ShopItem) -> Unit) {
             modifier = Modifier
                 .fillMaxWidth()
                 .height(100.dp)
-                .background(color = Color.Red)
                 .clip(RoundedCornerShape(12.dp))
         )
         Spacer(modifier = Modifier.height(4.dp))

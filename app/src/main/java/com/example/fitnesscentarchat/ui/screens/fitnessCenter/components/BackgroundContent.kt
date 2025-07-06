@@ -51,7 +51,9 @@ fun FitnessCenterContent(
     showGraphOverlay: Boolean,
     onViewQRChange: (Boolean) -> Unit,
     viewQROverlay: Boolean,
-    viewModel: FitnessCenterViewModel
+    viewModel: FitnessCenterViewModel,
+    onUserChatSelect: () -> Unit,
+    onUserItemsSelect: () -> Unit
 ) {
     val animatedColor = rememberAnimatedGradientColor(uiState.fitnessCenter?.color ?: "0xFF000000")
 
@@ -83,7 +85,10 @@ fun FitnessCenterContent(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             BackgroundTopBar(
-                showNewsOverlay, currentUser
+                showNewsOverlay,
+                currentUser,
+                onUserChatSelect=onUserChatSelect,
+                onUserItemsSelect=onUserItemsSelect
             )
             Spacer(modifier = Modifier.padding(20.dp))
             TopTextSection(onTopTextPositioned = onTopTextPositioned, onViewGraphClick = { onshowGraphOverlayChange(true) }, uiState.recentAttendance)

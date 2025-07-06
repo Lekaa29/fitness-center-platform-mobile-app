@@ -9,6 +9,7 @@ data class ChatUiState(
     val isSending: Boolean = false,
     val participants: List<User>? = emptyList(),
     val messages: List<Message> = emptyList(),
+    val totalUnread: Int? = null,
     val error: String? = null,
     val conversations: List<Conversation>? = emptyList()
 ){

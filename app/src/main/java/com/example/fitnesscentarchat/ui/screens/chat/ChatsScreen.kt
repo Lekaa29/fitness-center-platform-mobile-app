@@ -19,23 +19,22 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Snackbar
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
+import androidx.compose.material.icons.filled.Group
+import androidx.compose.material3.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.*
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.text.font.FontWeight
+import coil.compose.AsyncImage
 import com.example.fitnesscentarchat.data.models.Conversation
 import com.example.fitnesscentarchat.data.models.User
-import com.example.fitnesscentarchat.ui.screens.shop.UserShopItems
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -44,27 +43,39 @@ fun ChatsScreen(
     onChatSelected: (Int, Int, String) -> Unit,
     onNavigateBack: () -> Unit
 ) {
-
-
     val uiState by remember {
         viewModel.uiState
     }.collectAsStateWithLifecycle()
-
 
     LaunchedEffect(Unit) {
         viewModel.loadConversation()
     }
 
-    // Log state changes
-
-
-
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("CHATS") }
+                title = {
+                    Text(
+                        "Chats",
+                        color = Color.White,
+                        fontWeight = FontWeight.Bold
+                    )
+                },
+                navigationIcon = {
+                    IconButton(onClick = onNavigateBack) {
+                        Icon(
+                            imageVector = Icons.Default.ArrowBack,
+                            contentDescription = "Back",
+                            tint = Color.White
+                        )
+                    }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = Color.Black
+                )
             )
-        }
+        },
+        containerColor = Color.Black
     ) { paddingValues ->
         Box(
             modifier = Modifier
@@ -73,46 +84,43 @@ fun ChatsScreen(
         ) {
             when {
                 uiState.isLoading -> {
-                    Log.d("CHATS_SCREEN", "Showing loading state")
                     CircularProgressIndicator(
-                        modifier = Modifier.align(Alignment.Center)
+                        modifier = Modifier.align(Alignment.Center),
+                        color = Color.White
                     )
                 }
-                uiState.conversations?.size == 0 -> {
-                    Log.d("CHATS_SCREEN", "Showing empty state")
+                uiState.conversations?.isEmpty() == true -> {
                     Column(
                         modifier = Modifier.align(Alignment.Center),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Text(
                             text = "No conversations yet",
-                            style = MaterialTheme.typography.bodyLarge,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                            style = MaterialTheme.typography.headlineSmall,
+                            color = Color.White,
+                            fontWeight = FontWeight.Medium
                         )
                         Spacer(modifier = Modifier.height(8.dp))
                         Text(
                             text = "Start a new conversation to see it here",
                             style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                            color = Color.Gray
                         )
                     }
                 }
                 else -> {
-                    Log.d("CHATS_SCREEN", "Showing ${uiState.conversations?.size} conversations")
                     LazyColumn(
                         modifier = Modifier.fillMaxSize(),
                         contentPadding = PaddingValues(vertical = 8.dp)
                     ) {
                         items(uiState.conversations!!) { conversation ->
-                            Log.d("CHATS_SCREEN", "Rendering conversation: ${conversation.Title}")
                             ConversationItem(
                                 conversation = conversation,
                                 onClick = {
-                                    Log.d("CHATS_SCREEN", "Conversation clicked: id=${conversation.IdConversation}, title=${conversation.Title}")
                                     onChatSelected(
                                         conversation.IdConversation,
                                         0,
-                                        conversation.Title ?: ""
+                                        conversation.Title ?: "Unknown title"
                                     )
                                 }
                             )
@@ -123,16 +131,27 @@ fun ChatsScreen(
 
             // Show error if any
             uiState.error?.let { error ->
-                Log.e("CHATS_SCREEN", "Error state: $error")
-                Snackbar(
-                    modifier = Modifier.align(Alignment.BottomCenter),
-                    action = {
+                Card(
+                    modifier = Modifier
+                        .align(Alignment.BottomCenter)
+                        .padding(16.dp),
+                    colors = CardDefaults.cardColors(
+                        containerColor = Color.Red.copy(alpha = 0.9f)
+                    )
+                ) {
+                    Row(
+                        modifier = Modifier.padding(16.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = error,
+                            color = Color.White,
+                            modifier = Modifier.weight(1f)
+                        )
                         TextButton(onClick = { viewModel.clearError() }) {
-                            Text("Dismiss")
+                            Text("Dismiss", color = Color.White)
                         }
                     }
-                ) {
-                    Text(error)
                 }
             }
         }
@@ -141,14 +160,15 @@ fun ChatsScreen(
 
 @Composable
 fun ConversationItem(conversation: Conversation, onClick: () -> Unit) {
-    Log.d("CHATS_SCREEN", "ConversationItem composing for: ${conversation.Title}")
-
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 4.dp)
+            .padding(horizontal = 16.dp, vertical = 6.dp)
             .clickable(onClick = onClick),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+        colors = CardDefaults.cardColors(
+            containerColor = Color(0xFF1A1A1A)
+        ),
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
         Row(
             modifier = Modifier
@@ -156,12 +176,61 @@ fun ConversationItem(conversation: Conversation, onClick: () -> Unit) {
                 .padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Icon(
-                imageVector = Icons.Default.Person,
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.primary,
-                modifier = Modifier.size(40.dp)
-            )
+            // Profile picture or group icon
+            Box(
+                modifier = Modifier
+                    .size(50.dp)
+                    .clip(CircleShape),
+                contentAlignment = Alignment.Center
+            ) {
+                if (conversation.IsGroup) {
+                    // Group icon
+                    Card(
+                        modifier = Modifier.size(50.dp),
+                        shape = CircleShape,
+                        colors = CardDefaults.cardColors(
+                            containerColor = Color(0xFF333333)
+                        )
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Group,
+                            contentDescription = "Group chat",
+                            tint = Color.White,
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(12.dp)
+                        )
+                    }
+                } else {
+                    // Individual chat - try to load image, fallback to person icon
+                    if (!conversation.ImageUrl.isNullOrBlank()) {
+                        AsyncImage(
+                            model = conversation.ImageUrl,
+                            contentDescription = "Profile picture",
+                            modifier = Modifier
+                                .size(50.dp)
+                                .clip(CircleShape)
+                        )
+                    } else {
+                        Card(
+                            modifier = Modifier.size(50.dp),
+                            shape = CircleShape,
+                            colors = CardDefaults.cardColors(
+                                containerColor = Color(0xFF333333)
+                            )
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Person,
+                                contentDescription = "Profile picture",
+                                tint = Color.White,
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .padding(12.dp)
+                            )
+                        }
+                    }
+                }
+            }
 
             Spacer(modifier = Modifier.width(16.dp))
 
@@ -171,6 +240,8 @@ fun ConversationItem(conversation: Conversation, onClick: () -> Unit) {
                 Text(
                     text = conversation.Title ?: "Untitled Conversation",
                     style = MaterialTheme.typography.titleMedium,
+                    color = Color.White,
+                    fontWeight = FontWeight.Medium,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
@@ -178,12 +249,35 @@ fun ConversationItem(conversation: Conversation, onClick: () -> Unit) {
                 Spacer(modifier = Modifier.height(4.dp))
 
                 Text(
-                    text = "Conversation ID: ${conversation.IdConversation}",
+                    text = if (conversation.IsGroup) "Group Chat" else "Private Chat",
                     style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    color = Color.Gray,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
+            }
+
+            // Unread messages badge
+            if (conversation.UnreadCount > 0) {
+                Card(
+                    modifier = Modifier.size(24.dp),
+                    shape = CircleShape,
+                    colors = CardDefaults.cardColors(
+                        containerColor = Color(0xFF4CAF50) // Green color for unread badge
+                    )
+                ) {
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = if (conversation.UnreadCount > 99) "99+" else conversation.UnreadCount.toString(),
+                            style = MaterialTheme.typography.labelSmall,
+                            color = Color.White,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+                }
             }
         }
     }

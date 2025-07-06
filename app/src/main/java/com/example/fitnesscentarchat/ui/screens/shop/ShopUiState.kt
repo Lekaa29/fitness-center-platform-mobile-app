@@ -11,6 +11,6 @@ data class ShopUiState(
     //val coaches
     //val membershipPackages
     val fitnessCenter: FitnessCenter? = null,
-
+    val userItems: List<ShopItem> = emptyList(),
     val error: String? = null,
 )

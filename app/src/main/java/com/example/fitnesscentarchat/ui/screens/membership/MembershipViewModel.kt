@@ -64,6 +64,28 @@ class MembershipViewModel(
         }
     }
 
+    fun BuyMembership(fitnessCenterId: Int, membershipPackageId : Int)
+    {
+        Log.d("ShopViewModel", "BuyShopItem called with ID: $membershipPackageId")
+
+        viewModelScope.launch {
+            try {
+                membershipRepository.AddMembership(fitnessCenterId, membershipPackageId).fold(
+                    onSuccess = {
+                        Log.d("ShopViewModel", "Successfully bought item with ID: $membershipPackageId")
+                        // Refresh user items after purchase
+                    },
+                    onFailure = { error ->
+                        Log.e("ShopViewModel", "Failed to buy item $membershipPackageId: ${error.message}", error)
+                    }
+                )
+            } catch (e: Exception) {
+                Log.e("ShopViewModel", "Exception in BuyShopItem: ${e.message}", e)
+            }
+        }
+    }
+
+
 
 
     fun clearError() {

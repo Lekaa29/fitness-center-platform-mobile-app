@@ -194,7 +194,15 @@ class MainActivity : ComponentActivity() {
                                     navController.popBackStack()
                                 },
                                 onChatClicked = {  conversationId, userId, chatName ->
-                                    navController.navigate("conversation/$conversationId/$userId/$chatName") }
+                                    navController.navigate("conversation/$conversationId/$userId/$chatName") },
+
+                                onUserChatSelect = {
+                                    navController.navigate("messages")
+
+                                },
+                                onUserItemsSelect = {
+                                    navController.navigate("purchases")
+                                }
                             )
                         }
 
@@ -220,7 +228,15 @@ class MainActivity : ComponentActivity() {
                                     navController.popBackStack()
                                 },
                                 onChatClicked = {  conversationId, userId, chatName ->
-                                    navController.navigate("conversation/$conversationId/$userId/$chatName") }
+                                    navController.navigate("conversation/$conversationId/$userId/$chatName") },
+                                onUserChatSelect = {
+                                    navController.navigate("messages")
+
+                                },
+                                onUserItemsSelect = {
+                                    navController.navigate("purchases")
+                                }
+
                             )
                         }
 

@@ -11,6 +11,11 @@ interface IMessageRepository {
     suspend fun sendMessage(receiverId: Int, content: String): Result<Message>
     suspend fun getUsersConversations(): Result<List<Conversation>>
     suspend fun getConversationParticipants(conversationId: Int): Result<List<User>>
+
+    suspend fun conversationMarkAllAsRead(conversationId: Int): Result<Int>
+    suspend fun getTotalUnreadMessages(): Result<Int>
+    suspend fun getConversationUnreadMessagesAsync(conversationId: Int): Result<Int>
+
     fun getMessagesFlow(conversationId: Int): Flow<List<Message>>
 
 

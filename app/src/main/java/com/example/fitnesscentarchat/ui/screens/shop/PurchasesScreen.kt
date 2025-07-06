@@ -18,6 +18,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.example.fitnesscentarchat.data.models.ShopItem
 import com.example.fitnesscentarchat.ui.screens.hub.ShopViewModel
@@ -29,18 +30,22 @@ fun PurchasesScreen(
     viewModel: ShopViewModel,
     onNavigateBack: () -> Unit
 ) {
-    val userItems by viewModel.userItems.collectAsState()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+
+
 
     LaunchedEffect(Unit) {
-        Log.d("PurchasesScreen", "LaunchedEffect triggered, calling getUserItems()")
-        viewModel.getUserItems()
+        viewModel.loadShopItems()
     }
 
+
+
     // Add logging for state changes
-    LaunchedEffect(userItems) {
-        Log.d("PurchasesScreen", "UserItems updated: ${userItems.size} items")
-        if (userItems.isNotEmpty()) {
-            userItems.forEachIndexed { index, item ->
+    LaunchedEffect(uiState.userItems) {
+        Log.d("PurchasesScreen", "UserItems updated: ${uiState.userItems.size} items")
+        if (uiState.userItems.isNotEmpty()) {
+            uiState.userItems.forEachIndexed { index, item ->
                 Log.d("PurchasesScreen", "Item $index: ${item.Name} - ${item.Price}")
             }
         } else {
@@ -76,8 +81,8 @@ fun PurchasesScreen(
         )
 
         // Show content or empty state
-        if (userItems.isNotEmpty()) {
-            UserShopItems(userItems)
+        if (uiState.userItems.isNotEmpty()) {
+            UserShopItems(uiState.userItems)
         } else {
             Box(
                 modifier = Modifier.fillMaxSize(),

@@ -150,7 +150,10 @@ fun Line(color: Color){
 }
 
 @Composable
-fun TopBarContent(currentUser: User?
+fun TopBarContent(
+    currentUser: User?,
+    onUserChatSelect: () -> Unit,
+    onUserItemsSelect: () -> Unit
 ) {
     Row(
         modifier = Modifier
@@ -164,8 +167,8 @@ fun TopBarContent(currentUser: User?
         ProfileButtonWithDropdown(
             currentUser = currentUser,
             size = 40.dp,
-            onMessagesClick = { /* Handle messages */ },
-            onItemsClick = { /* Handle items */ },
+            onMessagesClick = { onUserChatSelect() },
+            onItemsClick = { onUserItemsSelect() },
             onLogoutClick = { /* Handle logout */ }
         )
     }
@@ -175,7 +178,9 @@ fun TopBarContent(currentUser: User?
 @Composable
 fun BackgroundTopBar(
     showNewsOverlay: Boolean,
-    currentUser: User?
+    currentUser: User?,
+    onUserChatSelect: () -> Unit,
+    onUserItemsSelect: () -> Unit
 ) {
 
 
@@ -188,7 +193,9 @@ fun BackgroundTopBar(
     ) {
         if(showNewsOverlay==false){
             TopBarContent(
-                currentUser
+                currentUser,
+                onUserChatSelect=onUserChatSelect,
+                onUserItemsSelect=onUserItemsSelect
             )
 
         }

@@ -33,10 +33,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.fitnesscentarchat.data.models.MembershipPackage
+import com.example.fitnesscentarchat.ui.screens.hub.MembershipViewModel
 
 
 @Composable
-fun MembershipItemOverlay(membershipPackage: MembershipPackage?, onBackClick: (Boolean) -> Unit) {
+fun MembershipItemOverlay(membershipPackage: MembershipPackage?,
+                          onBackClick: (Boolean) -> Unit,
+                          viewModel: MembershipViewModel) {
     val title = membershipPackage?.title ?: "title"
     var price = membershipPackage?.price?.toFloat() ?: 0.0f
     if(membershipPackage?.discount != null && membershipPackage.discount != 0){
@@ -111,7 +114,10 @@ fun MembershipItemOverlay(membershipPackage: MembershipPackage?, onBackClick: (B
                 Button(
                     onClick = {
                         // Handle save logic here
+                        viewModel.BuyMembership(membershipPackage!!.idFitnessCentar, membershipPackage!!.id)
+                        viewModel.loadMembership(membershipPackage!!.idFitnessCentar)
                         onBackClick(true)
+
                     },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = Color(0xFFFFFFFF)

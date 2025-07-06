@@ -9,8 +9,8 @@ import kotlinx.coroutines.flow.Flow
 
 interface IMembershipRepository {
     suspend fun GetCurrentUserMemberships(): Result<List<MembershipModel>>
-    suspend fun GetUserMembershipByFitnessCenter(fitnessCenterId: Int): Result<MembershipModel>
-    suspend fun AddMembership(fitnessCenterId: Int): Result<MembershipModel>
+    suspend fun GetUserMembershipByFitnessCenter(fitnessCenterId: Int): Result<MembershipModel?>
+    suspend fun AddMembership(fitnessCenterId: Int, membershipPackageId: Int): Result<MembershipModel>
     suspend fun GetFitnessCenterLeaderboard(fitnessCenterId: Int): Result<List<MembershipModel>>
 
     suspend fun GetFitnessCenterMembershipPackages(fitnessCenterId: Int): Result<List<MembershipPackage>>

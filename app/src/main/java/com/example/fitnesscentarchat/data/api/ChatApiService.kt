@@ -48,7 +48,7 @@ interface ChatApiService {
     suspend fun getCurrentUserMemberships(): List<MembershipModel>
 
     @GET("Membership/user/{fitnessCentarId}")
-    suspend fun getUserMembershipByFitnessCenter(@Path("fitnessCentarId") fitnessCentarId: Int): MembershipModel
+    suspend fun getUserMembershipByFitnessCenter(@Path("fitnessCentarId") fitnessCentarId: Int): Response<MembershipModel?>
 
     @GET("Membership/MembershipPackages/{fitnessCentarId}")
     suspend fun getFitnessCenterMembershipPackages(@Path("fitnessCentarId") fitnessCentarId: Int): List<MembershipPackage>
@@ -120,6 +120,22 @@ interface ChatApiService {
 
     @GET("Conversation/chats")
     suspend fun getUsersConversations(): List<Conversation>
+
+    @GET("Conversation/{conversationId}/message/unreadCount")
+    suspend fun getConversationUnreadMessagesAsync(@Path("conversationId") conversationId: Int): Int
+
+
+    @POST("Conversation/{conversationId}/markAsRead/")
+    suspend fun conversationMarkAllAsRead(
+        @Path("conversationId") conversationId: Int,
+    ): Response<Any>
+    @GET("Conversation/unreadCount")
+    suspend fun getTotalUnreadMessages() : Int
+
+    @POST("Conversation/message/markAsRead")
+    suspend fun markMessagesAsRead(
+        @Body idList: List<Int>
+    ): Response<Any>
 
 
 }

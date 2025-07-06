@@ -26,6 +26,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.example.fitnesscentarchat.data.models.MembershipPackage
 import com.example.fitnesscentarchat.ui.screens.hub.MembershipUiState
+import com.example.fitnesscentarchat.ui.screens.hub.MembershipViewModel
 import okhttp3.internal.wait
 
 @Composable
@@ -33,7 +34,8 @@ fun MembershipContent(
     uiState: MembershipUiState,
     onTopTextPositioned: (Float) -> Unit,
     onMembershipItemChange: (Boolean) -> Unit,
-    membershipItemOverlay: Boolean
+    membershipItemOverlay: Boolean,
+    viewModel: MembershipViewModel
 ) {
     // State management
     var selectedIndex by remember { mutableIntStateOf(0) }
@@ -89,7 +91,8 @@ fun MembershipContent(
         ) {
             MembershipItemOverlay(
                 membershipPackage = uiState.membershipPackages?.getOrNull(selectedIndex),
-                onBackClick = { onMembershipItemChange(false) }
+                onBackClick = { onMembershipItemChange(false) },
+                viewModel = viewModel,
             )
         }
     }

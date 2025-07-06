@@ -42,13 +42,21 @@ class MembershipRepository(
     }
 
 
-    override suspend fun GetUserMembershipByFitnessCenter(fitnessCenterId: Int): Result<MembershipModel> {
+    override suspend fun GetUserMembershipByFitnessCenter(fitnessCenterId: Int): Result<MembershipModel?> {
         return try {
-            Result.success(apiService.getUserMembershipByFitnessCenter(fitnessCenterId))
+            val response = apiService.getUserMembershipByFitnessCenter(fitnessCenterId)
+
+            if (response.isSuccessful) {
+                Result.success(response.body()) // body could be null, which is fine
+            } else {
+                // For non-200 responses, you might want to return null instead of failing
+                Result.success(null)
+            }
         } catch (e: Exception) {
             Result.failure(e)
         }
     }
+
     override suspend fun GetFitnessCenterLeaderboard(fitnessCenterId: Int): Result<List<MembershipModel>> {
         return try {
             Result.success(apiService.getFitnessCenterLeaderboard(fitnessCenterId))
@@ -58,7 +66,7 @@ class MembershipRepository(
     }
 
 
-    override suspend fun AddMembership(fitnessCenterId: Int): Result<MembershipModel> {
+    override suspend fun AddMembership(fitnessCenterId: Int, membershipPackageId: Int): Result<MembershipModel> {
         return try {
             val currentUser = authRepository.getCurrentUser()
             if (currentUser == null) {
@@ -79,7 +87,7 @@ class MembershipRepository(
                 points = null,
                 fitnessCentarLogoUrl = null,
                 username = null,
-                idMembershipPackage = null
+                idMembershipPackage = membershipPackageId
             )
 
 

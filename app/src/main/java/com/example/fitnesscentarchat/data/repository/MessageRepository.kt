@@ -77,6 +77,39 @@ class MessageRepository(
         }
     }
 
+    override suspend fun getConversationUnreadMessagesAsync(conversationId: Int): Result<Int> {
+        return try {
+            Result.success(apiService.getConversationUnreadMessagesAsync(conversationId))
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+
+    override suspend fun getTotalUnreadMessages(): Result<Int> {
+        return try {
+            Result.success(apiService.getTotalUnreadMessages())
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    override suspend fun conversationMarkAllAsRead(conversationId: Int): Result<Int> {
+        return try {
+
+
+            val response = apiService.conversationMarkAllAsRead(conversationId)
+            if (response.isSuccessful) {
+                Result.success(1) // Or parse the actual response
+            } else {
+                Result.failure(Exception("Failed to send message: ${response.code()}"))
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+
 
 
     override fun getMessagesFlow(conversationId: Int): Flow<List<Message>> = flow {
@@ -95,3 +128,16 @@ class MessageRepository(
 
 
 }
+
+
+/*
+ @GET("Conversation/{conversationId}/message/unreadCount")
+    suspend fun getConversationUnreadMessagesAsync(@Path("conversationId") conversationId: Int): Int
+    @GET("Conversation/unreadCount")
+    suspend fun getTotalUnreadMessages(@Path("conversationId") conversationId: Int): Int
+
+    @POST("Conversation/message/markAsRead")
+    suspend fun markMessagesAsRead(
+        @Body idList: List<Int>
+    ): Response<Any>
+ */

@@ -43,6 +43,8 @@ fun FitnessCenterWithBottomNav(
     authRepository: AuthRepository,
     onNavigateBack: () -> Unit,
     onChatClicked: (Int, Int, String) -> Unit,
+    onUserChatSelect: () -> Unit,
+    onUserItemsSelect: () -> Unit
 ) {
     var currentTab by remember { mutableStateOf("overview") }
     val coroutineScope = rememberCoroutineScope()
@@ -106,7 +108,9 @@ fun FitnessCenterWithBottomNav(
                     fitnessCenterId = fitnessCenterId,
                     authRepository = authRepository,
                     onNavigateBack = onNavigateBack,
-                    onChatClicked=onChatClicked
+                    onChatClicked=onChatClicked,
+                    onUserChatSelect=onUserChatSelect,
+                    onUserItemsSelect=onUserItemsSelect
                 )
             }
 
