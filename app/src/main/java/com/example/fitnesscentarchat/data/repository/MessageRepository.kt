@@ -5,6 +5,7 @@ import com.example.fitnesscentarchat.data.api.ChatApiService
 import com.example.fitnesscentarchat.data.models.Conversation
 import com.example.fitnesscentarchat.data.models.Message
 import com.example.fitnesscentarchat.data.models.User
+import com.example.fitnesscentarchat.data.models.UserMessage
 import com.example.fitnesscentarchat.data.repository.interfaces.IAuthRepository
 import com.example.fitnesscentarchat.data.repository.interfaces.IMessageRepository
 import kotlinx.coroutines.Dispatchers
@@ -69,6 +70,16 @@ class MessageRepository(
         }
     }
 
+    override suspend fun getLastParticipantsReadMessages(conversationId: Int): Result<List<UserMessage>> {
+        return try {
+            Result.success(apiService.getLastParticipantsReadMessages(conversationId))
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+
+
     override suspend fun getConversationParticipants(conversationId: Int): Result<List<User>> {
         return try {
             Result.success(apiService.getConversationParticipants(conversationId))
@@ -122,7 +133,7 @@ class MessageRepository(
                 Log.d("messError", "${e.message}")
                 // Handle error or fallback
             }
-            delay(3000)
+            delay(1000)
         }
     }.flowOn(Dispatchers.IO)
 

@@ -189,7 +189,7 @@ fun BuyItemOverlay(shopItem: ShopItem?,
                     Text(
                         text = "Pay ${price*quantity}Eur",
                         color = Color.Black,
-                        fontSize = 16.sp,
+                        fontSize = 12.sp,
                         maxLines = 1, // Increase from 3 to 6 or higher
                         fontWeight = FontWeight.Medium
                     )

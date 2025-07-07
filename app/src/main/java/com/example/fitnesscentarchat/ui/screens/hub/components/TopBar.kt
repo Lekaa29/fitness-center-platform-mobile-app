@@ -110,7 +110,7 @@ fun BackgroundTopBar(
         modifier = Modifier
             .fillMaxWidth()
             .height(52.dp)
-            .background(Color(0xFF1A1A1A)) // Dark background
+            .background(Color(0x001A1A1A)) // Dark background
             .graphicsLayer(alpha = 1.0f)
             .zIndex(1f)
     ) {

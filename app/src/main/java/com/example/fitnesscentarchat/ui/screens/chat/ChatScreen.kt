@@ -172,11 +172,12 @@ fun ChatScreen(
                             MessageChunkItem(
                                 chunk = chunk,
                                 isFromCurrentUser = chunk.senderId == currentUser,
-                                user = user
+                                user = user,
+                                readMessages = uiState.readMessages, // Pass read messages
+                                currentUserId = currentUser // Pass current user ID
                             )
+
                         }
-                    }
-                }
             }
 
             // Input area
@@ -206,6 +207,7 @@ fun ChatScreen(
                     onClick = {
                         if (messageText.isNotBlank()) {
                             // Handle sending message
+                            viewModel.sendMessage(conversationId, messageText)
                             messageText = ""
                         }
                     },
@@ -239,4 +241,4 @@ fun ChatScreen(
             }
         }
     }
-}
+}}}

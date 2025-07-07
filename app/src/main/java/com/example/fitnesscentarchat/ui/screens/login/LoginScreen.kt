@@ -36,20 +36,20 @@ fun LoginScreen(
     // Animated gradient colors
     val infiniteTransition = rememberInfiniteTransition(label = "gradient")
     val animatedOffset by infiniteTransition.animateFloat(
-        initialValue = 0f,
+        initialValue = 0.7f,
         targetValue = 1f,
         animationSpec = infiniteRepeatable(
             animation = tween(7000, easing = LinearEasing),
-            repeatMode = RepeatMode.Reverse
+            repeatMode = RepeatMode.Restart
         ),
         label = "gradient_offset"
     )
 
     // Color interpolation for smooth gradient animation
     val gradientColors = listOf(
-        Color(0xF015152C), // Dark blue
-        Color(0xFF000B3C), // Darker blue
-        Color(0xFF213B61), // Navy blue
+        Color(0xFF0D0D1B),  // Back to start
+        Color(0xFF13022E), // Purple
+        Color(0xFF1C0542), // Purple
         Color(0xFF13022E), // Purple
         Color(0xFF0D0D1B)  // Back to start
     )

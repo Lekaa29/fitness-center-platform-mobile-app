@@ -132,6 +132,9 @@ interface ChatApiService {
     @GET("Conversation/unreadCount")
     suspend fun getTotalUnreadMessages() : Int
 
+    @GET("Conversation/{conversationId}/participentRead")
+    suspend fun getLastParticipantsReadMessages(@Path("conversationId") conversationId: Int): List<UserMessage>
+
     @POST("Conversation/message/markAsRead")
     suspend fun markMessagesAsRead(
         @Body idList: List<Int>

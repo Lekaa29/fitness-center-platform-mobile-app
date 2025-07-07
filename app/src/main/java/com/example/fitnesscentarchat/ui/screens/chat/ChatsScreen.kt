@@ -263,7 +263,7 @@ fun ConversationItem(conversation: Conversation, onClick: () -> Unit) {
                     modifier = Modifier.size(24.dp),
                     shape = CircleShape,
                     colors = CardDefaults.cardColors(
-                        containerColor = Color(0xFF4CAF50) // Green color for unread badge
+                        containerColor = Color(0xFFA72F2F) // Green color for unread badge
                     )
                 ) {
                     Box(

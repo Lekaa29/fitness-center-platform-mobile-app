@@ -3,6 +3,7 @@ package com.example.fitnesscentarchat.ui.screens.chat
 import com.example.fitnesscentarchat.data.models.Conversation
 import com.example.fitnesscentarchat.data.models.Message
 import com.example.fitnesscentarchat.data.models.User
+import com.example.fitnesscentarchat.data.models.UserMessage
 
 data class ChatUiState(
     val isLoading: Boolean = false,
@@ -11,7 +12,8 @@ data class ChatUiState(
     val messages: List<Message> = emptyList(),
     val totalUnread: Int? = null,
     val error: String? = null,
-    val conversations: List<Conversation>? = emptyList()
+    val conversations: List<Conversation>? = emptyList(),
+    val readMessages: List<UserMessage>? = emptyList()
 ){
     // Add explicit toString for debugging
     override fun toString(): String {

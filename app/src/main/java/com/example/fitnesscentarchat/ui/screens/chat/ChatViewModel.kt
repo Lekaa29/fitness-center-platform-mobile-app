@@ -72,6 +72,19 @@ class ChatViewModel(
                         }
                     }
                 )
+                messageRepository.getLastParticipantsReadMessages(conversationId).fold(
+                    onSuccess = { readMessages ->
+                        _uiState.update { it.copy(readMessages = readMessages, isLoading = false) }
+                    },
+                    onFailure = { error ->
+                        _uiState.update {
+                            it.copy(
+                                error = error.message ?: "Failed to load conversations",
+                                isLoading = false
+                            )
+                        }
+                    }
+                )
             }
         }
     }
@@ -131,6 +144,8 @@ class ChatViewModel(
                     }
                 }
             )
+
+
         }
     }
 

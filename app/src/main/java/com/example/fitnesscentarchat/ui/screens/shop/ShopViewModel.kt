@@ -27,12 +27,12 @@ class ShopViewModel(
     fun loadShopItems(){
         viewModelScope.launch {
             shopRepository.GetUserItems().fold(
-                onSuccess = { shopItems ->
-                    Log.d("ShopViewModel", "Successfully received ${shopItems.size} user items")
-                    shopItems.forEachIndexed { index, item ->
+                onSuccess = { userItems ->
+                    Log.d("ShopViewModel", "Successfully received ${userItems.size} user items")
+                    userItems.forEachIndexed { index, item ->
                         Log.d("ShopViewModel", "User Item $index: Name=${item.Name}, Price=${item.Price}, ID=${item.IdShopItem}")
                     }
-                    _uiState.update { it.copy(shopItems = shopItems, isLoading = false) }
+                    _uiState.update { it.copy(userItems = userItems, isLoading = false) }
                 },
                 onFailure = { error ->
                     Log.e("ShopViewModel", "Failed to get user items: ${error.message}", error)

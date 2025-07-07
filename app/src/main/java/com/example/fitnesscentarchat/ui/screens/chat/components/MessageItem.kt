@@ -25,6 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.*
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -32,6 +33,7 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.example.fitnesscentarchat.data.models.Message
 import com.example.fitnesscentarchat.data.models.User
+import com.example.fitnesscentarchat.data.models.UserMessage
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
@@ -91,7 +93,9 @@ fun MessageItem(message: Message, isFromCurrentUser: Boolean) {
 fun MessageChunkItem(
     chunk: MessageChunk,
     isFromCurrentUser: Boolean,
-    user: User
+    user: User,
+    readMessages: List<UserMessage>? = null,
+    currentUserId: Int
 ) {
     Column {
         if (chunk.showTimestamp) {
@@ -135,6 +139,14 @@ fun MessageChunkItem(
                             fontSize = 14.sp
                         )
                     }
+
+                    // Add read receipt indicator below each message
+                    ReadReceiptIndicator(
+                        messageId = message.id, // Assuming Message has an id field
+                        readMessages = readMessages,
+                        currentUserId = currentUserId,
+                        isFromCurrentUser = isFromCurrentUser
+                    )
                 }
             }
 
@@ -146,6 +158,13 @@ fun MessageChunkItem(
             }
         }
     }
+}
+fun getReadReceiptsForMessage(messageId: Int, readMessages: List<UserMessage>?, currentUserId: Int): List<String> {
+    return readMessages?.filter { userMessage ->
+        userMessage.messageId >= messageId && // User's last read message ID is >= this message ID
+                userMessage.isRead &&
+                userMessage.userId != currentUserId // Exclude current user
+    }?.map { it.name     } ?: emptyList()
 }
 
 
@@ -264,4 +283,32 @@ fun TimestampDivider(timestamp: LocalDateTime) {
         }
     }
 }
+
+@Composable
+fun ReadReceiptIndicator(
+    messageId: Int,
+    readMessages: List<UserMessage>?,
+    currentUserId: Int,
+    isFromCurrentUser: Boolean
+) {
+    // Show read receipts for ALL messages, not just current user's
+    val readByUsers = getReadReceiptsForMessage(messageId, readMessages, currentUserId)
+
+    if (readByUsers.isNotEmpty()) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 12.dp, vertical = 2.dp),
+            horizontalArrangement = if (isFromCurrentUser) Arrangement.End else Arrangement.Start
+        ) {
+            Text(
+                text = "✓ Read by ${readByUsers.joinToString(", ")}",
+                color = Color.White.copy(alpha = 0.6f),
+                fontSize = 10.sp,
+                fontStyle = FontStyle.Italic
+            )
+        }
+    }
+}
+
 

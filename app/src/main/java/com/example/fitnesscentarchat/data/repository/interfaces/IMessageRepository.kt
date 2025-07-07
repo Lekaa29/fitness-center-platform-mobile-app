@@ -4,6 +4,7 @@ package com.example.fitnesscentarchat.data.repository.interfaces
 import com.example.fitnesscentarchat.data.models.Conversation
 import com.example.fitnesscentarchat.data.models.Message
 import com.example.fitnesscentarchat.data.models.User
+import com.example.fitnesscentarchat.data.models.UserMessage
 import kotlinx.coroutines.flow.Flow
 
 interface IMessageRepository {
@@ -13,6 +14,7 @@ interface IMessageRepository {
     suspend fun getConversationParticipants(conversationId: Int): Result<List<User>>
 
     suspend fun conversationMarkAllAsRead(conversationId: Int): Result<Int>
+    suspend fun getLastParticipantsReadMessages(conversationId: Int): Result<List<UserMessage>>
     suspend fun getTotalUnreadMessages(): Result<Int>
     suspend fun getConversationUnreadMessagesAsync(conversationId: Int): Result<Int>
 
