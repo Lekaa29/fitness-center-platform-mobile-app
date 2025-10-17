@@ -5,6 +5,8 @@ A full-stack fitness center management platform featuring a .NET backend API and
 **Developer:** Lovro Lešić  
 **Development Period:** April – July 2025
 
+**Video demo:**  https://www.youtube.com/watch?v=b2VvbD09GO0&list=PLpDPcJsgzOQikIlDxOQEDyXm6FG5RSuPe
+
 ## Overview
 
 This comprehensive fitness management system enables gym operators to manage their facilities, track member attendance, offer subscription packages, and engage with users through a feature-rich mobile application. The platform includes real-time attendance tracking, gamification through points and leaderboards, integrated messaging, and an e-commerce system.
